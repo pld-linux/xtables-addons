@@ -18,7 +18,8 @@ fi
 start() {
 	if [ -f $IPSET_CONFIG ]; then
 		show "Applying ipset rules"
-		/usr/sbin/ipset -R $IPSET_CONFIG && ok || fail
+		/usr/sbin/ipset -X
+		/usr/sbin/ipset -R < $IPSET_CONFIG && ok || fail
 		touch /var/lock/subsys/ipset
 	fi
 }
@@ -32,25 +33,28 @@ stop() {
 case "$1" in
   start)
 	start
+	exit $?
 	;;
   stop)
 	stop
+	exit $?
 	;;
   restart|force-reload)
 	start
+	exit $?
 	;;
   status)
 	/usr/sbin/ipset -L --sorted --numeric
+	exit $?
 	;;
   save)
 	show "Saving current rules to %s" $IPSET_CONFIG
 	touch $IPSET_CONFIG
 	chmod 600 $IPSET_CONFIG
-	/usr/sbin/ipset -S > $IPSET_CONFIG  2>/dev/null && ok || fail
+	/usr/sbin/ipset -S > $IPSET_CONFIG && ok || fail
+	exit $?
 	;;
   *)
 	msg_usage "$0 {start|stop|restart|force-reload|status|save}"
 	exit 3
 esac
-
-exit 0
