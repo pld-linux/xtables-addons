@@ -19,7 +19,13 @@ start() {
 	if [ -f $IPSET_CONFIG ]; then
 		show "Applying ipset rules"
 		/usr/sbin/ipset -X
-		/usr/sbin/ipset -R < $IPSET_CONFIG && ok || fail
+		/usr/sbin/ipset -R < $IPSET_CONFIG
+	   	RETVAL=$?
+		if [ $RETVAL = 0 ]; then
+			ok
+		else
+			fail
+		fi
 		touch /var/lock/subsys/ipset
 	fi
 }
@@ -30,18 +36,16 @@ stop() {
 	rm -f /var/lock/subsys/ipset
 }
 
+RETVAL=0
 case "$1" in
   start)
 	start
-	exit $?
 	;;
   stop)
 	stop
-	exit $?
 	;;
   restart|force-reload)
 	start
-	exit $?
 	;;
   status)
 	/usr/sbin/ipset -L --sorted --numeric
@@ -51,10 +55,17 @@ case "$1" in
 	show "Saving current rules to %s" $IPSET_CONFIG
 	touch $IPSET_CONFIG
 	chmod 600 $IPSET_CONFIG
-	/usr/sbin/ipset -S > $IPSET_CONFIG && ok || fail
-	exit $?
+	/usr/sbin/ipset -S > $IPSET_CONFIG
+   	RETVAL=$?
+	if [ $RETVAL = 0 ]; then
+		ok
+	else
+		fail
+	fi
 	;;
   *)
 	msg_usage "$0 {start|stop|restart|force-reload|status|save}"
 	exit 3
 esac
+
+exit $RETVAL
