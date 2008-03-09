@@ -57,7 +57,7 @@ Linux. Вони дозволяють вам встановлювати міжм�
 
 %build
 %configure \
-	--with-kbuild=%{_kernelsrcdir}/build \
+	--with-kbuild=%{_kernelsrcdir} \
 	--with-ksource=%{_kernelsrcdir}
 %{__make}
 
