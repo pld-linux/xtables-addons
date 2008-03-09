@@ -1,4 +1,8 @@
 #
+# TODO
+# - kernel modules package
+# - build userspace in %build, not %install
+#
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 #
@@ -22,7 +26,6 @@ Source0:	http://dev.computergmbh.de/files/xtables/%{name}-%{version}.tar.bz2
 BuildRequires:	xtables-devel >= 1.5.2
 %if %{with dist_kernel} && %{netfilter_snap} != 0
 BuildRequires:	kernel%{_alt_kernel}-headers(netfilter) >= %{netfilter_snap}
-BuildRequires:	kernel%{_alt_kernel}-source
 %endif
 BuildConflicts:	kernel-headers < 2.3.0
 Provides:	firewall-userspace-tool
@@ -59,11 +62,15 @@ Linux. Вони дозволяють вам встановлювати міжм�
 %configure \
 	--with-kbuild=%{_kernelsrcdir} \
 	--with-ksource=%{_kernelsrcdir}
-%{__make}
+export XA_TOPSRCDIR=$PWD
+%build_kernel_modules -C extensions -m compat_xtables
+#{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
+%install_kernel_modules -m extensions/compat_xtables -d kernel/net/netfilter
+install extensions/xt_*ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/netfilter
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
@@ -73,4 +80,4 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/xtables/*.so
-%{_mandir}/man8/*
+/lib/modules/%{_kernel_ver}/kernel/net/netfilter/*
