@@ -1,10 +1,11 @@
 #
 # TODO
 # - kernel modules package
-# - build userspace in %build, not %install
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
+%bcond_without	kernel
+%bcond_without	userspace
 #
 %define		netfilter_snap		20070806
 %define		llh_version		7:2.6.22.1
@@ -17,15 +18,16 @@ Summary(ru.UTF-8):	Утилиты для управления пакетными
 Summary(uk.UTF-8):	Утиліти для керування пакетними фільтрами ядра Linux
 Summary(zh_CN.UTF-8):	Linux内核包过滤管理工具
 Name:		xtables-addons
-Version:	1.5.2
+Version:	1.5.4
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://dev.computergmbh.de/files/xtables/%{name}-%{version}.tar.bz2
-# Source0-md5:	742ecdf7f40d5b24031cfe50f38be530
+# Source0-md5:	ab41fe6418286a95726418cd8df9fded
+Patch0:		%{name}-libs.patch
 BuildRequires:	xtables-devel >= 1.5.2
 %if %{with dist_kernel} && %{netfilter_snap} != 0
-BuildRequires:	kernel%{_alt_kernel}-headers(netfilter) >= %{netfilter_snap}
+#BuildRequires:	kernel%{_alt_kernel}-headers(netfilter) >= %{netfilter_snap}
 %endif
 BuildConflicts:	kernel-headers < 2.3.0
 Provides:	firewall-userspace-tool
@@ -57,27 +59,42 @@ Linux. Вони дозволяють вам встановлювати міжм�
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %configure \
 	--with-kbuild=%{_kernelsrcdir} \
 	--with-ksource=%{_kernelsrcdir}
 export XA_TOPSRCDIR=$PWD
+
+%if %{with kernel}
 %build_kernel_modules -C extensions -m compat_xtables
-#{__make}
+%endif
+
+%if %{with userspace}
+%{__make} -C extensions libs
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
+%if %{with kernel}
 %install_kernel_modules -m extensions/compat_xtables -d kernel/net/netfilter
 install extensions/xt_*ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/netfilter
-%{__make} install \
+%endif
+%if %{with userspace}
+%{__make} -C extensions libs_install \
 	DESTDIR=$RPM_BUILD_ROOT
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
+%if %{with userspace}
 %attr(755,root,root) %{_libdir}/xtables/*.so
+%endif
+%if %{with kernel}
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/*
+%endif
