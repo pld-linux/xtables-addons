@@ -1,14 +1,12 @@
 #
 # TODO
-# - kernel modules package
+# - kernel modules package (or not, 2 packages with mutual R?)
+# - descriptions
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel
 %bcond_without	userspace
-#
-%define		netfilter_snap		20070806
-%define		llh_version		7:2.6.22.1
 #
 %define		rel 0.1
 Summary:	Extensible packet filtering system && extensible NAT system
@@ -18,19 +16,19 @@ Summary(ru.UTF-8):	Утилиты для управления пакетными
 Summary(uk.UTF-8):	Утиліти для керування пакетними фільтрами ядра Linux
 Summary(zh_CN.UTF-8):	Linux内核包过滤管理工具
 Name:		xtables-addons
-Version:	1.5.4
-Release:	%{rel}
+Version:	1.5.4.1
+Release:	%{rel}@%{_kernel_ver_str}
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://dev.computergmbh.de/files/xtables/%{name}-%{version}.tar.bz2
-# Source0-md5:	ab41fe6418286a95726418cd8df9fded
+# Source0-md5:	f78352e9021986347cd347edc82c40c2
 Patch0:		%{name}-libs.patch
-BuildRequires:	xtables-devel >= 1.5.2
-%if %{with dist_kernel} && %{netfilter_snap} != 0
-#BuildRequires:	kernel%{_alt_kernel}-headers(netfilter) >= %{netfilter_snap}
-%endif
-BuildConflicts:	kernel-headers < 2.3.0
-Provides:	firewall-userspace-tool
+#BuildRequires:	xtables-devel >= 1.5.2
+BuildRequires:	iptables-devel >= 1.4.1
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.25}
+BuildRequires:	rpmbuild(macros) >= 1.379
+%{?with_dist_kernel:%requires_releq_kernel}
+Requires(post,postun):	/sbin/depmod
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -90,10 +88,25 @@ install extensions/xt_*ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post
+%depmod %{_kernel_ver}
+
+%postun
+%depmod %{_kernel_ver}
+
 %files
 %defattr(644,root,root,755)
 %if %{with userspace}
-%attr(755,root,root) %{_libdir}/xtables/*.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_CHAOS.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_DELUDE.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_IPMARK.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_LOGMARK.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_TARPIT.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_TEE.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_condition.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_geoip.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_ipp2p.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_portscan.so
 %endif
 %if %{with kernel}
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/*
