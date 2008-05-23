@@ -1,0 +1,24 @@
+diff -upr xtables-addons-1.5.4.1/extensions/libxt_geoip.c xtables-addons-1.5.4.1/extensions/libxt_geoip.c
+--- xtables-addons-1.5.4.1/extensions/libxt_geoip.c	2008-04-26 12:57:08.000000000 +0200
++++ xtables-addons-1.5.4.1/extensions/libxt_geoip.c	2008-05-23 13:41:56.351239875 +0200
+@@ -26,7 +26,7 @@
+ #include <unistd.h>
+ #include <xtables.h>
+ #include "xt_geoip.h"
+-#define GEOIP_DB_DIR "/var/geoip"
++#define GEOIP_DB_DIR "/var/lib/geoip"
+ 
+ static void geoip_help(void)
+ {
+diff -upr xtables-addons-1.5.4.1/extensions/libxt_geoip.man xtables-addons-1.5.4.1/extensions/libxt_geoip.man
+--- xtables-addons-1.5.4.1/extensions/libxt_geoip.man	2008-04-26 12:57:08.000000000 +0200
++++ xtables-addons-1.5.4.1/extensions/libxt_geoip.man	2008-05-23 13:42:17.849762235 +0200
+@@ -11,6 +11,6 @@ The country is inputed by its ISO3166 co
+ .P
+ The extra files you will need is the binary database files. They are generated
+ from a country-subnet database with the geoip_csv_iv0.pl tool, available at
+-http://jengelh.hopto.org/files/geoip/ . The files MUST be moved to /var/geoip/
++http://jengelh.hopto.org/files/geoip/ . The files MUST be moved to /var/lib/geoip/
+ as the shared library is statically looking for this pathname (e.g.
+-/var/geoip/LE/de.iv0).
++/var/lib/geoip/LE/de.iv0).
