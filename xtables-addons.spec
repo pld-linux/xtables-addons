@@ -8,7 +8,7 @@
 %bcond_without	kernel
 %bcond_without	userspace
 #
-%define		rel 0.1
+%define		rel 0.9
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -23,12 +23,14 @@ Group:		Networking/Daemons
 Source0:	http://dev.computergmbh.de/files/xtables/%{name}-%{version}.tar.bz2
 # Source0-md5:	f78352e9021986347cd347edc82c40c2
 Patch0:		%{name}-libs.patch
+Patch1:		%{name}-geoip-dbpath.patch
 #BuildRequires:	xtables-devel >= 1.5.2
 BuildRequires:	iptables-devel >= 1.4.1
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.25}
 BuildRequires:	rpmbuild(macros) >= 1.379
 %{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
+Requires:	iptables >= 1.4.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -58,6 +60,7 @@ Linux. Вони дозволяють вам встановлювати міжм�
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %configure \
