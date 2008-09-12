@@ -1,21 +1,16 @@
---- xtables-addons-1.5.4/extensions/GNUmakefile.in~	2008-04-10 01:34:58.000000000 +0200
-+++ xtables-addons-1.5.4/extensions/GNUmakefile.in	2008-04-10 01:36:19.978943386 +0200
-@@ -58,11 +58,15 @@
+--- xtables-addons-1.5.7/extensions/GNUmakefile.in.orig	2008-09-01 21:35:51.000000000 +0200
++++ xtables-addons-1.5.7/extensions/GNUmakefile.in	2008-09-12 10:34:09.000000000 +0200
+@@ -60,11 +60,11 @@
  
  .PHONY: all install clean distclean FORCE
  
--all: modules ${targets} matches.man targets.man
-+libs: ${targets} matches.man targets.man
+-all: modules user matches.man targets.man
++all: user matches.man targets.man
+ 
+ user: ${targets}
  
 -install: modules_install ${targets_install}
-+all: modules libs
-+
-+libs_install:
++install: ${targets_install}
  	@mkdir -p "${DESTDIR}${xtlibdir}";
--	install -pm0755 ${targets_install} "${DESTDIR}${xtlibdir}/";
-+	install ${targets_install} "${DESTDIR}${xtlibdir}/";
-+
-+install: modules_install libs_install
+ 	install -pm0755 ${targets_install} "${DESTDIR}${xtlibdir}/";
  
- clean: clean_modules
- 	rm -f *.oo *.so;
