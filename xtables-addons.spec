@@ -24,6 +24,7 @@ Source0:	http://dev.computergmbh.de/files/xtables/%{name}-%{version}.tar.bz2
 # Source0-md5:	cfd0a0997efd4084d0505f93ff28c4cf
 Patch0:		%{name}-libs.patch
 Patch1:		%{name}-geoip-dbpath.patch
+Patch2:		%{name}-help.patch
 #BuildRequires:	xtables-devel >= 1.5.2
 BuildRequires:	iptables-devel >= 1.4.1
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.25}
@@ -62,6 +63,7 @@ Linux. Вони дозволяють вам встановлювати міжм�
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %configure \
