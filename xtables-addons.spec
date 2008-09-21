@@ -22,6 +22,7 @@ License:	GPL
 Group:		Networking/Daemons
 Source0:	http://dev.computergmbh.de/files/xtables/%{name}-%{version}.tar.bz2
 # Source0-md5:	cfd0a0997efd4084d0505f93ff28c4cf
+Source1:	ipset.init
 Patch0:		%{name}-libs.patch
 Patch1:		%{name}-geoip-dbpath.patch
 Patch2:		%{name}-help.patch
@@ -33,6 +34,7 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 Requires(post,postun):	/sbin/depmod
 Requires:	iptables >= 1.4.1
 Obsoletes:	ipset
+Obsoletes:	ipset-init
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -83,7 +85,7 @@ export XA_TOPSRCDIR=$PWD
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter,%{_mandir}/man8}
+install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter,%{_mandir}/man8}
 
 %if %{with kernel}
 cd extensions
@@ -94,6 +96,8 @@ cd ..
 %endif
 
 %if %{with userspace}
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ipset
+
 %{__make} -C extensions install \
 	DESTDIR=$RPM_BUILD_ROOT
 %{__make} -C extensions/ipset install \
@@ -111,14 +115,19 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 %depmod %{_kernel_ver}
+/sbin/chkconfig --add ipset
 
 %postun
 %depmod %{_kernel_ver}
+if [ "$1" = "0" ]; then
+	/sbin/chkconfig --del ipset
+fi
 
 %files
 %defattr(644,root,root,755)
 %if %{with userspace}
 # ipset
+%attr(754,root,root) /etc/rc.d/init.d/ipset
 %attr(755,root,root) %{_libdir}/xtables/libipset_iphash.so
 %attr(755,root,root) %{_libdir}/xtables/libipset_ipmap.so
 %attr(755,root,root) %{_libdir}/xtables/libipset_ipporthash.so
