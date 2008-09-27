@@ -8,7 +8,7 @@
 %bcond_without	kernel
 %bcond_without	userspace
 #
-%define		rel 0.1
+%define		rel 1
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -20,15 +20,18 @@ Version:	1.5.7
 Release:	%{rel}@%{_kernel_ver_str}
 License:	GPL
 Group:		Networking/Daemons
-Source0:	http://dev.computergmbh.de/files/xtables/%{name}-%{version}.tar.bz2
+Source0:	http://dev.medozas.de/files/xtables/%{name}-%{version}.tar.bz2
 # Source0-md5:	cfd0a0997efd4084d0505f93ff28c4cf
+URL:		http://jengelh.medozas.de/projects/xtables/
 Source1:	ipset.init
 Patch0:		%{name}-libs.patch
 Patch1:		%{name}-geoip-dbpath.patch
 Patch2:		%{name}-help.patch
-#BuildRequires:	xtables-devel >= 1.5.2
+BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	iptables-devel >= 1.4.1
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.25}
+BuildRequires:	libtool
 BuildRequires:	rpmbuild(macros) >= 1.379
 %{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
@@ -68,6 +71,10 @@ Linux. Вони дозволяють вам встановлювати міжм�
 %patch2 -p1
 
 %build
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__automake}
 %configure \
 	--with-kbuild=%{_kernelsrcdir} \
 	--with-ksource=%{_kernelsrcdir}
@@ -115,13 +122,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 %depmod %{_kernel_ver}
+%if %{with userspace}
 /sbin/chkconfig --add ipset
+%endif
 
 %postun
 %depmod %{_kernel_ver}
+%if %{with userspace}
 if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del ipset
 fi
+%endif
 
 %files
 %defattr(644,root,root,755)
