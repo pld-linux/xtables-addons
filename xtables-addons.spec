@@ -8,7 +8,7 @@
 %bcond_without	kernel
 %bcond_without	userspace
 #
-%define		rel 1
+%define		rel 2
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -23,7 +23,6 @@ Group:		Networking/Daemons
 Source0:	http://dev.medozas.de/files/xtables/%{name}-%{version}.tar.bz2
 # Source0-md5:	cfd0a0997efd4084d0505f93ff28c4cf
 URL:		http://jengelh.medozas.de/projects/xtables/
-Source1:	ipset.init
 Patch0:		%{name}-libs.patch
 Patch1:		%{name}-geoip-dbpath.patch
 Patch2:		%{name}-help.patch
@@ -36,8 +35,6 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 %{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
 Requires:	iptables >= 1.4.1
-Obsoletes:	ipset
-Obsoletes:	ipset-init
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -87,7 +84,6 @@ export XA_TOPSRCDIR=$PWD
 
 %if %{with userspace}
 %{__make} -C extensions
-%{__make} -C extensions/ipset
 %endif
 
 %install
@@ -98,16 +94,11 @@ install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,/lib/modules/%{_kernel_ver}/kernel/n
 cd extensions
 %install_kernel_modules -m compat_xtables -d kernel/net/netfilter
 install xt_*ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/netfilter
-install ipset/*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter
 cd ..
 %endif
 
 %if %{with userspace}
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/ipset
-
 %{__make} -C extensions install \
-	DESTDIR=$RPM_BUILD_ROOT
-%{__make} -C extensions/ipset install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 cd extensions
@@ -122,34 +113,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 %depmod %{_kernel_ver}
-%if %{with userspace}
-/sbin/chkconfig --add ipset
-%endif
 
 %postun
 %depmod %{_kernel_ver}
-%if %{with userspace}
-if [ "$1" = "0" ]; then
-	/sbin/chkconfig --del ipset
-fi
-%endif
 
 %files
 %defattr(644,root,root,755)
 %if %{with userspace}
-# ipset
-%attr(754,root,root) /etc/rc.d/init.d/ipset
-%attr(755,root,root) %{_libdir}/xtables/libipset_iphash.so
-%attr(755,root,root) %{_libdir}/xtables/libipset_ipmap.so
-%attr(755,root,root) %{_libdir}/xtables/libipset_ipporthash.so
-%attr(755,root,root) %{_libdir}/xtables/libipset_iptree.so
-%attr(755,root,root) %{_libdir}/xtables/libipset_iptreemap.so
-%attr(755,root,root) %{_libdir}/xtables/libipset_macipmap.so
-%attr(755,root,root) %{_libdir}/xtables/libipset_nethash.so
-%attr(755,root,root) %{_libdir}/xtables/libipset_portmap.so
-%attr(755,root,root) %{_sbindir}/ipset
-%{_mandir}/man8/ipset.*
-#
 %attr(755,root,root) %{_libdir}/xtables/libxt_CHAOS.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_DELUDE.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_DHCPADDR.so
@@ -181,19 +151,6 @@ fi
 %{_mandir}/man8/libxt_quota2.*
 %endif
 %if %{with kernel}
-# ipset
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ip_set.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ip_set_iphash.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ip_set_ipmap.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ip_set_ipporthash.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ip_set_iptree.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ip_set_iptreemap.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ip_set_macipmap.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ip_set_nethash.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ip_set_portmap.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipt_SET.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipt_set.ko.gz
-#
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/compat_xtables.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_CHAOS.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_DELUDE.ko.gz
