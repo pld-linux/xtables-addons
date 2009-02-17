@@ -8,7 +8,7 @@
 %bcond_without	kernel
 %bcond_without	userspace
 #
-%define		rel 11
+%define		rel 12
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
