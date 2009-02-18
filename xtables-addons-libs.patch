@@ -1,16 +1,20 @@
---- xtables-addons-1.5.7/extensions/GNUmakefile.in.orig	2008-09-01 21:35:51.000000000 +0200
-+++ xtables-addons-1.5.7/extensions/GNUmakefile.in	2008-09-12 10:34:09.000000000 +0200
-@@ -60,11 +60,11 @@
+--- xtables-addons-1.10/extensions/GNUmakefile.in	2009-02-18 00:31:26.000000000 +0100
++++ xtables-addons-1.10.new/extensions/GNUmakefile.in	2009-02-18 20:31:45.005459510 +0100
+@@ -63,7 +63,7 @@
  
  .PHONY: all install clean distclean FORCE
  
--all: modules user matches.man targets.man
-+all: user matches.man targets.man
+-all: subdirs modules user matches.man targets.man
++all: subdirs user matches.man targets.man
+ 
+ subdirs:
+ 	@for i in ${subdirs_list}; do ${MAKE} -C $$i; done;
+@@ -73,7 +73,7 @@
  
  user: ${targets}
  
--install: modules_install ${targets_install}
-+install: ${targets_install}
+-install: modules_install subdirs-install ${targets_install}
++install: subdirs-install ${targets_install}
  	@mkdir -p "${DESTDIR}${xtlibdir}";
  	install -pm0755 ${targets_install} "${DESTDIR}${xtlibdir}/";
  
