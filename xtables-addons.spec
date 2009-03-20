@@ -8,7 +8,7 @@
 %bcond_without	kernel
 %bcond_without	userspace
 #
-%define		rel	0.1
+%define		rel	1
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Утилиты для управления пакетными
 Summary(uk.UTF-8):	Утиліти для керування пакетними фільтрами ядра Linux
 Summary(zh_CN.UTF-8):	Linux内核包过滤管理工具
 Name:		xtables-addons
-Version:	1.10
+Version:	1.12
 Release:	%{rel}@%{_kernel_ver_str}
 License:	GPL
 Group:		Networking/Daemons
-Source0:	http://dev.medozas.de/files/xtables/%{name}-%{version}.tar.bz2
-# Source0-md5:	c8ef700b7fd0afbf8599a71e008b33b8
-URL:		http://jengelh.medozas.de/projects/xtables/
+Source0:	http://dl.sourceforge.net/xtables-addons/%{name}-%{version}.tar.bz2
+# Source0-md5:	e1544d87bbae03a02874c6598daa111d
+URL:		http://xtables-addons.sourceforge.net/
 Patch0:		%{name}-libs.patch
 Patch1:		%{name}-geoip-dbpath.patch
 BuildRequires:	autoconf
@@ -64,6 +64,8 @@ Linux. Вони дозволяють вам встановлювати міжм�
 %setup -q
 %patch0 -p1
 %patch1 -p1
+
+%{__sed} -i -e 's#build_ipset=m#build_ipset=n#' mconfig
 
 %build
 %{__libtoolize}
@@ -131,23 +133,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/xtables/libxt_fuzzy.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_geoip.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_ipp2p.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_portscan.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_lscan.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_quota2.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_length2.so
-#
-# Is it place for libipset ?
-#%attr(755,root,root) %{_libdir}/xtables/libipset_iphash.so
-#%attr(755,root,root) %{_libdir}/xtables/libipset_ipmap.so
-#%attr(755,root,root) %{_libdir}/xtables/libipset_ipporthash.so
-#%attr(755,root,root) %{_libdir}/xtables/libipset_ipportiphash.so
-#%attr(755,root,root) %{_libdir}/xtables/libipset_ipportnethash.so
-#%attr(755,root,root) %{_libdir}/xtables/libipset_iptree.so
-#%attr(755,root,root) %{_libdir}/xtables/libipset_iptreemap.so
-#%attr(755,root,root) %{_libdir}/xtables/libipset_macipmap.so
-#%attr(755,root,root) %{_libdir}/xtables/libipset_nethash.so
-#%attr(755,root,root) %{_libdir}/xtables/libipset_portmap.so
-#%attr(755,root,root) %{_libdir}/xtables/libipset_setlist.so
-
 %{_mandir}/man8/libxt_CHAOS.*
 %{_mandir}/man8/libxt_DELUDE.*
 %{_mandir}/man8/libxt_DHCPADDR.*
@@ -162,7 +150,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/libxt_fuzzy.*
 %{_mandir}/man8/libxt_geoip.*
 %{_mandir}/man8/libxt_ipp2p.*
-%{_mandir}/man8/libxt_portscan.*
+%{_mandir}/man8/libxt_lscan.*
 %{_mandir}/man8/libxt_quota2.*
 %{_mandir}/man8/libxt_length.8*
 
@@ -181,7 +169,7 @@ rm -rf $RPM_BUILD_ROOT
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_fuzzy.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_geoip.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_ipp2p.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_portscan.ko.gz
+/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_lscan.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_quota2.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_length2.ko.gz
 %endif
