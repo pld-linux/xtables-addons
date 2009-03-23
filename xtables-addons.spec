@@ -1,14 +1,26 @@
 #
 # TODO
-# - kernel modules package (or not, 2 packages with mutual R?)
 # - descriptions
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
-%bcond_without	kernel
-%bcond_without	userspace
+%bcond_without	kernel		# don't build kernel modules
+%bcond_without	userspace	# # don't build userspace tools
+%bcond_with	verbose		# verbose build (V=1)
+
+%if %{without kernel}
+%undefine	with_dist_kernel
+%endif
+%if "%{_alt_kernel}" != "%{nil}"
+%undefine	with_userspace
+%endif
+%if %{without userspace}
+# nothing to be placed to debuginfo package
+%define		_enable_debug_packages	0
+%endif
+
 #
-%define		rel	1
+%define		rel	2
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -17,9 +29,9 @@ Summary(uk.UTF-8):	Утиліти для керування пакетними �
 Summary(zh_CN.UTF-8):	Linux内核包过滤管理工具
 Name:		xtables-addons
 Version:	1.12
-Release:	%{rel}@%{_kernel_ver_str}
+Release:	%{rel}
 License:	GPL
-Group:		Networking/Daemons
+Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/xtables-addons/%{name}-%{version}.tar.bz2
 # Source0-md5:	e1544d87bbae03a02874c6598daa111d
 URL:		http://xtables-addons.sourceforge.net/
@@ -31,8 +43,6 @@ BuildRequires:	iptables-devel >= 1.4.1
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.25}
 BuildRequires:	libtool
 BuildRequires:	rpmbuild(macros) >= 1.379
-%{?with_dist_kernel:%requires_releq_kernel}
-Requires(post,postun):	/sbin/depmod
 Requires:	iptables >= 1.4.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -59,6 +69,17 @@ IP маскарадинг, и т.п.
 xtables-addons управляють кодом фільтрації пакетів мережі в ядрі
 Linux. Вони дозволяють вам встановлювати міжмережеві екрани
 (firewalls) та IP маскарадинг, тощо.
+
+%package -n kernel%{_alt_kernel}-net-xtables-addons
+Summary:	-
+Summary(pl.UTF-8):	-
+Release:	%{release}@%{_kernel_ver_str}
+Group:		Base/Kernel
+Requires:	%{name} = %{version}-%{rel}
+%{?with_dist_kernel:%requires_releq_kernel}
+Requires(post,postun):	/sbin/depmod
+
+%description -n kernel%{_alt_kernel}-net-xtables-addons
 
 %prep
 %setup -q
@@ -111,15 +132,15 @@ cd ..
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
+%post -n kernel%{_alt_kernel}-net-xtables-addons
 %depmod %{_kernel_ver}
 
-%postun
+%postun -n kernel%{_alt_kernel}-net-xtables-addons
 %depmod %{_kernel_ver}
 
+%if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%if %{with userspace}
 %attr(755,root,root) %{_libdir}/xtables/libxt_CHAOS.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_DELUDE.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_DHCPADDR.so
@@ -153,9 +174,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/libxt_lscan.*
 %{_mandir}/man8/libxt_quota2.*
 %{_mandir}/man8/libxt_length.8*
-
 %endif
+
 %if %{with kernel}
+%files -n kernel%{_alt_kernel}-net-xtables-addons
+%defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/compat_xtables.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_CHAOS.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_DELUDE.ko.gz
