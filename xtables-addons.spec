@@ -20,7 +20,7 @@
 %endif
 
 #
-%define		rel	0.1
+%define		rel	1
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -28,12 +28,12 @@ Summary(ru.UTF-8):	Утилиты для управления пакетными
 Summary(uk.UTF-8):	Утиліти для керування пакетними фільтрами ядра Linux
 Summary(zh_CN.UTF-8):	Linux内核包过滤管理工具
 Name:		xtables-addons
-Version:	1.14
+Version:	1.15
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/xtables-addons/%{name}-%{version}.tar.bz2
-# Source0-md5:	a17b178d137480b870a7aeb54aea44f8
+# Source0-md5:	034c3b40684a934af5ecb28a06f222b5
 URL:		http://xtables-addons.sourceforge.net/
 Patch0:		%{name}-libs.patch
 Patch1:		%{name}-geoip-dbpath.patch
@@ -147,6 +147,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/xtables/libxt_DHCPMAC.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_IPMARK.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_LOGMARK.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_RAWDNAT.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_RAWSNAT.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_STEAL.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_SYSRQ.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_TARPIT.so
@@ -155,6 +157,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/xtables/libxt_dhcpmac.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_fuzzy.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_geoip.so
+%attr(755,root,root) %{_libdir}/xtables/libxt_iface.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_ipp2p.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_ipv4options.so
 %attr(755,root,root) %{_libdir}/xtables/libxt_lscan.so
@@ -166,6 +169,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/libxt_ECHO.8
 %{_mandir}/man8/libxt_IPMARK.*
 %{_mandir}/man8/libxt_LOGMARK.*
+%{_mandir}/man8/libxt_RAWDNAT.*
+%{_mandir}/man8/libxt_RAWSNAT.*
 %{_mandir}/man8/libxt_STEAL.*
 %{_mandir}/man8/libxt_SYSRQ.*
 %{_mandir}/man8/libxt_TARPIT.*
@@ -174,6 +179,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/libxt_dhcpmac.*
 %{_mandir}/man8/libxt_fuzzy.*
 %{_mandir}/man8/libxt_geoip.*
+%{_mandir}/man8/libxt_iface.*
 %{_mandir}/man8/libxt_ipp2p.*
 %{_mandir}/man8/libxt_ipv4options.*
 %{_mandir}/man8/libxt_lscan.*
@@ -190,6 +196,8 @@ rm -rf $RPM_BUILD_ROOT
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_DHCPMAC.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_IPMARK.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_LOGMARK.ko.gz
+/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_RAWNAT.ko.gz
+/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_iface.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_STEAL.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_SYSRQ.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_TARPIT.ko.gz
