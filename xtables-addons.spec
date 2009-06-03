@@ -19,8 +19,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-#
-%define		rel	1
+%define		rel	2
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -37,6 +36,7 @@ Source0:	http://dl.sourceforge.net/xtables-addons/%{name}-%{version}.tar.bz2
 URL:		http://xtables-addons.sourceforge.net/
 Patch0:		%{name}-libs.patch
 Patch1:		%{name}-geoip-dbpath.patch
+Patch2:		kernelrelease.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	iptables-devel >= 1.4.3
@@ -86,6 +86,7 @@ Requires(post,postun):	/sbin/depmod
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %{__sed} -i -e 's#build_ipset=m#build_ipset=n#' mconfig
 
