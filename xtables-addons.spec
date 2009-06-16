@@ -19,7 +19,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	2
+%define		rel	1
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -27,12 +27,12 @@ Summary(ru.UTF-8):	Утилиты для управления пакетными
 Summary(uk.UTF-8):	Утиліти для керування пакетними фільтрами ядра Linux
 Summary(zh_CN.UTF-8):	Linux内核包过滤管理工具
 Name:		xtables-addons
-Version:	1.15
+Version:	1.17
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
 Source0:	http://dl.sourceforge.net/xtables-addons/%{name}-%{version}.tar.bz2
-# Source0-md5:	034c3b40684a934af5ecb28a06f222b5
+# Source0-md5:	eca2e3f4f4904814e3a301539876fae6
 URL:		http://xtables-addons.sourceforge.net/
 Patch0:		%{name}-libs.patch
 Patch1:		%{name}-geoip-dbpath.patch
