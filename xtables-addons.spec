@@ -19,7 +19,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	1
+%define		rel	2
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -143,72 +143,13 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/xtables/libxt_CHAOS.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_DELUDE.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_DHCPMAC.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_IPMARK.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_LOGMARK.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_RAWDNAT.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_RAWSNAT.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_STEAL.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_SYSRQ.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_TARPIT.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_TEE.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_condition.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_dhcpmac.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_fuzzy.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_geoip.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_iface.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_ipp2p.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_ipv4options.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_lscan.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_quota2.so
-%attr(755,root,root) %{_libdir}/xtables/libxt_length2.so
-%{_mandir}/man8/libxt_CHAOS.*
-%{_mandir}/man8/libxt_DELUDE.*
-%{_mandir}/man8/libxt_DHCPMAC.*
-%{_mandir}/man8/libxt_ECHO.8
-%{_mandir}/man8/libxt_IPMARK.*
-%{_mandir}/man8/libxt_LOGMARK.*
-%{_mandir}/man8/libxt_RAWDNAT.*
-%{_mandir}/man8/libxt_RAWSNAT.*
-%{_mandir}/man8/libxt_STEAL.*
-%{_mandir}/man8/libxt_SYSRQ.*
-%{_mandir}/man8/libxt_TARPIT.*
-%{_mandir}/man8/libxt_TEE.8*
-%{_mandir}/man8/libxt_condition.*
-%{_mandir}/man8/libxt_dhcpmac.*
-%{_mandir}/man8/libxt_fuzzy.*
-%{_mandir}/man8/libxt_geoip.*
-%{_mandir}/man8/libxt_iface.*
-%{_mandir}/man8/libxt_ipp2p.*
-%{_mandir}/man8/libxt_ipv4options.*
-%{_mandir}/man8/libxt_lscan.*
-%{_mandir}/man8/libxt_quota2.*
-%{_mandir}/man8/libxt_length.8*
+%attr(755,root,root) %{_libdir}/xtables/libxt_*.so
+%{_mandir}/man8/libxt_*.*
 %endif
 
 %if %{with kernel}
 %files -n kernel%{_alt_kernel}-net-xtables-addons
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/compat_xtables.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_CHAOS.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_DELUDE.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_DHCPMAC.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_IPMARK.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_LOGMARK.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_RAWNAT.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_iface.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_STEAL.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_SYSRQ.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_TARPIT.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_TEE.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_condition.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_fuzzy.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_geoip.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_ipp2p.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_ipv4options.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_lscan.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_quota2.ko.gz
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_length2.ko.gz
+/lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_*.ko.gz
 %endif
