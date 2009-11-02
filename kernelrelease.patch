@@ -1,6 +1,6 @@
---- xtables-addons-1.15/configure.ac~	2009-04-30 18:58:23.000000000 +0000
-+++ xtables-addons-1.15/configure.ac	2009-06-03 00:16:46.747444821 +0000
-@@ -63,37 +63,6 @@ if [[ -n "$ksourcedir" ]]; then
+--- xtables-addons-1.18/configure.ac~	2009-09-09 17:37:07.000000000 +0200
++++ xtables-addons-1.18/configure.ac	2009-11-02 11:19:36.000000000 +0100
+@@ -63,41 +63,6 @@
  	kinclude_CFLAGS="$kinclude_CFLAGS -I $ksourcedir/include";
  fi;
  
@@ -20,13 +20,17 @@
 -kminor="${krel%%.*}";
 -krel="${krel#*.}";
 -kmicro="${krel%%.*}";
--krel="${krel#*.}";
--kstable="${krel%%.*}";
--if test -z "$kstable"; then
+-krel2="${krel#*.}";
+-if test "$krel" = "$krel2"; then
 -	kstable=0;
+-else
+-	kstable="${krel%%.*}";
+-	if test -z "$kstable"; then
+-		kstable=0;
+-	fi;
 -fi;
 -echo "Found kernel version $kmajor.$kminor.$kmicro.$kstable in $kbuilddir";
--if test "$kmajor" -gt 2 -o "$kminor" -gt 6 -o "$kmicro" -gt 30; then
+-if test "$kmajor" -gt 2 -o "$kminor" -gt 6 -o "$kmicro" -gt 31; then
 -	echo "WARNING: You are trying a newer kernel. Results may vary. :-)";
 -elif test \( "$kmajor" -lt 2 -o "$kminor" -lt 6 -o "$kmicro" -lt 17 \) -o \
 -    \( "$kmajor" -eq 2 -a "$kminor" -eq 6 -a "$kmicro" -eq 18 -a \
