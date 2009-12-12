@@ -19,7 +19,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	4
+%define		rel	5
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
