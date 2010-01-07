@@ -78,6 +78,7 @@ Linux. Вони дозволяють вам встановлювати міжм�
 
 %package -n kernel%{_alt_kernel}-net-xtables-addons
 Summary:	Kernel modules for xtables addons
+Summary(pl.UTF-8):	Moudły jądra dla xtables addons
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires:	%{name} = %{version}-%{rel}
@@ -86,6 +87,9 @@ Requires(post,postun):	/sbin/depmod
 
 %description -n kernel%{_alt_kernel}-net-xtables-addons
 Kernel modules for xtables addons.
+
+%description -n kernel%{_alt_kernel}-net-xtables-addons -l pl.UTF-8
+Moduły jądra dla xtables addons.
 
 %prep
 %setup -q
