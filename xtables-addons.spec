@@ -47,9 +47,14 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 Requires:	iptables >= 1.4.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+# use macro, so adapter won't try to wrap
+%define		kpackage	kernel%{_alt_kernel}-net-xtables-addons = %{rel}@%{_kernel_ver_str}
+
 %description
 An extensible NAT system, and an extensible packet filtering system.
 Replacement of ipchains in 2.6 and higher kernels.
+
+You need %{kpackage} installed for the tools to work.
 
 %description -l pl.UTF-8
 Wydajny system translacji adresów (NAT) oraz system filtrowania
@@ -72,15 +77,15 @@ Linux. Вони дозволяють вам встановлювати міжм�
 (firewalls) та IP маскарадинг, тощо.
 
 %package -n kernel%{_alt_kernel}-net-xtables-addons
-Summary:	-
-Summary(pl.UTF-8):	-
-Release:	%{release}@%{_kernel_ver_str}
+Summary:	Kernel modules for xtables addons
+Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Requires:	%{name} = %{version}-%{rel}
 %{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
 
 %description -n kernel%{_alt_kernel}-net-xtables-addons
+Kernel modules for xtables addons.
 
 %prep
 %setup -q
@@ -116,7 +121,7 @@ install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,/lib/modules/%{_kernel_ver}/kernel/n
 %if %{with kernel}
 cd extensions
 %install_kernel_modules -m compat_xtables -d kernel/net/netfilter
-install xt_*ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/netfilter
+install -p xt_*ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/netfilter
 cd ..
 %endif
 
@@ -126,7 +131,7 @@ cd ..
 
 cd extensions
 for m in $(cat .manpages.lst); do
-	install libxt_$m.man $RPM_BUILD_ROOT%{_mandir}/man8/libxt_$m.8
+	cp -a libxt_$m.man $RPM_BUILD_ROOT%{_mandir}/man8/libxt_$m.8
 done
 cd ..
 %endif
