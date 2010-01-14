@@ -81,7 +81,9 @@ Summary:	Kernel modules for xtables addons
 Summary(pl.UTF-8):	Moudły jądra dla xtables addons
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-Requires:	%{name} = %{version}-%{rel}
+# VERSION only dependency is intentional, for allowing multiple kernel pkgs and
+# single userspace package installs.
+Requires:	%{name} = %{version}
 %{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
 
