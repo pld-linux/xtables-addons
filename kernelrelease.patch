@@ -1,8 +1,8 @@
---- xtables-addons-1.18/configure.ac~	2009-09-09 17:37:07.000000000 +0200
-+++ xtables-addons-1.18/configure.ac	2009-11-02 11:19:36.000000000 +0100
-@@ -63,41 +63,6 @@
- 	kinclude_CFLAGS="$kinclude_CFLAGS -I $ksourcedir/include";
- fi;
+--- xtables-addons-1.25/configure.ac~	2010-04-26 15:12:03.000000000 +0300
++++ xtables-addons-1.25/configure.ac	2010-04-27 09:56:25.995761262 +0300
+@@ -37,40 +37,6 @@
+ 	-Winline -pipe -DXTABLES_LIBDIR=\\\"\${xtlibdir}\\\" \
+ 	-I\${XA_TOPSRCDIR}/include";
  
 -#
 -# check kernel version
@@ -20,17 +20,16 @@
 -kminor="${krel%%.*}";
 -krel="${krel#*.}";
 -kmicro="${krel%%.*}";
--krel2="${krel#*.}";
--if test "$krel" = "$krel2"; then
+-if test "$kmicro" = "$krel"; then
 -	kstable=0;
 -else
--	kstable="${krel%%.*}";
+-	kstable="${krel#*.}";
 -	if test -z "$kstable"; then
 -		kstable=0;
 -	fi;
 -fi;
 -echo "Found kernel version $kmajor.$kminor.$kmicro.$kstable in $kbuilddir";
--if test "$kmajor" -gt 2 -o "$kminor" -gt 6 -o "$kmicro" -gt 31; then
+-if test "$kmajor" -gt 2 -o "$kminor" -gt 6 -o "$kmicro" -gt 34; then
 -	echo "WARNING: You are trying a newer kernel. Results may vary. :-)";
 -elif test \( "$kmajor" -lt 2 -o "$kminor" -lt 6 -o "$kmicro" -lt 17 \) -o \
 -    \( "$kmajor" -eq 2 -a "$kminor" -eq 6 -a "$kmicro" -eq 18 -a \
@@ -40,5 +39,5 @@
 -fi;
 -
  AC_SUBST([regular_CFLAGS])
- AC_SUBST([xtables_CFLAGS])
- AC_SUBST([kinclude_CFLAGS])
+ AC_SUBST([kbuilddir])
+ AC_SUBST([xtlibdir])
