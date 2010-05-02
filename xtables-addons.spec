@@ -1,13 +1,14 @@
 # TODO
 # - descriptions
-# - package referenec implementation iptaccount(8) and userspace lib
+# - package reference implementation iptaccount(8) and userspace lib
 #   /usr/lib64/libxt_ACCOUNT_cl.la
 #   /usr/lib64/libxt_ACCOUNT_cl.so
 #   /usr/lib64/libxt_ACCOUNT_cl.so.0
 #   /usr/lib64/libxt_ACCOUNT_cl.so.0.0.0
 #   /usr/sbin/iptaccount
 #   and if packaged can remove debuginfo package omit
-# - subpackage for geoip due extra deps
+# - subpackage for geoip due extra deps? (it goes silly as then need THREE
+#   packages installed for functionality (userspace,kernel,data packages...)
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
@@ -34,12 +35,12 @@ Summary(ru.UTF-8):	Утилиты для управления пакетными
 Summary(uk.UTF-8):	Утиліти для керування пакетними фільтрами ядра Linux
 Summary(zh_CN.UTF-8):	Linux内核包过滤管理工具
 Name:		xtables-addons
-Version:	1.25
+Version:	1.26
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.bz2
-# Source0-md5:	d2765d1e6be6194b2c24efa6684a6874
+# Source0-md5:	6091032318ee7fb46d82dec9ae5ae422
 URL:		http://xtables-addons.sourceforge.net/
 Patch0:		kernelrelease.patch
 BuildRequires:	autoconf
