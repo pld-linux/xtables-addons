@@ -27,7 +27,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	2
+%define		rel	1
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -35,12 +35,12 @@ Summary(ru.UTF-8):	Утилиты для управления пакетными
 Summary(uk.UTF-8):	Утиліти для керування пакетними фільтрами ядра Linux
 Summary(zh_CN.UTF-8):	Linux内核包过滤管理工具
 Name:		xtables-addons
-Version:	1.26
+Version:	1.27
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
-Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.bz2
-# Source0-md5:	6091032318ee7fb46d82dec9ae5ae422
+Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.xz
+# Source0-md5:	f4f65ce5361d7f8c0908ca3db37fa8ee
 URL:		http://xtables-addons.sourceforge.net/
 Patch0:		kernelrelease.patch
 BuildRequires:	autoconf
@@ -116,7 +116,7 @@ Moduły jądra dla xtables addons.
 
 %if %{with kernel}
 srcdir=${PWD:-$(pwd)}
-%build_kernel_modules XA_ABSTOPSRCDIR=$srcdir -C extensions -m compat_xtables
+%build_kernel_modules V=1 XA_ABSTOPSRCDIR=$srcdir -C extensions -m compat_xtables
 %endif
 
 %if %{with userspace}
@@ -145,6 +145,9 @@ cp -a xtables-addons.8 $RPM_BUILD_ROOT%{_mandir}/man8
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+
 %post -n kernel%{_alt_kernel}-net-xtables-addons
 %depmod %{_kernel_ver}
 
@@ -154,7 +157,9 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/iptaccount
 %attr(755,root,root) %{_libdir}/xtables/libxt_*.so
+%attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*
 %{_mandir}/man8/xtables-addons.8*
 %endif
 

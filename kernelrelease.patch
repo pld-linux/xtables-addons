@@ -1,10 +1,9 @@
---- xtables-addons-1.25/configure.ac~	2010-04-26 15:12:03.000000000 +0300
-+++ xtables-addons-1.25/configure.ac	2010-04-27 09:56:25.995761262 +0300
-@@ -37,40 +37,6 @@
- 	-Winline -pipe -DXTABLES_LIBDIR=\\\"\${xtlibdir}\\\" \
+--- xtables-addons-1.27/configure.ac~	2010-05-16 22:19:02.000000000 +0200
++++ xtables-addons-1.27/configure.ac	2010-06-07 22:46:52.942325149 +0200
+@@ -38,38 +38,6 @@
  	-I\${XA_TOPSRCDIR}/include";
  
--#
+ #
 -# check kernel version
 -#
 -if grep -q "CentOS release 5\." /etc/redhat-release 2>/dev/null ||
@@ -29,7 +28,7 @@
 -	fi;
 -fi;
 -echo "Found kernel version $kmajor.$kminor.$kmicro.$kstable in $kbuilddir";
--if test "$kmajor" -gt 2 -o "$kminor" -gt 6 -o "$kmicro" -gt 34; then
+-if test "$kmajor" -gt 2 -o "$kminor" -gt 6 -o "$kmicro" -gt 35; then
 -	echo "WARNING: You are trying a newer kernel. Results may vary. :-)";
 -elif test \( "$kmajor" -lt 2 -o "$kminor" -lt 6 -o "$kmicro" -lt 17 \) -o \
 -    \( "$kmajor" -eq 2 -a "$kminor" -eq 6 -a "$kmicro" -eq 18 -a \
@@ -37,7 +36,6 @@
 -	echo "ERROR: That kernel version is not supported. Please see INSTALL for minimum configuration.";
 -	exit 1;
 -fi;
--
+ 
  AC_SUBST([regular_CFLAGS])
  AC_SUBST([kbuilddir])
- AC_SUBST([xtlibdir])
