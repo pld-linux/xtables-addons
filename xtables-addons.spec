@@ -1,12 +1,5 @@
 # TODO
 # - descriptions
-# - package reference implementation iptaccount(8) and userspace lib
-#   /usr/lib64/libxt_ACCOUNT_cl.la
-#   /usr/lib64/libxt_ACCOUNT_cl.so
-#   /usr/lib64/libxt_ACCOUNT_cl.so.0
-#   /usr/lib64/libxt_ACCOUNT_cl.so.0.0.0
-#   /usr/sbin/iptaccount
-#   and if packaged can remove debuginfo package omit
 # - subpackage for geoip due extra deps? (it goes silly as then need THREE
 #   packages installed for functionality (userspace,kernel,data packages...)
 #
