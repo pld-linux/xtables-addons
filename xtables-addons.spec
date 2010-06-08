@@ -1,7 +1,5 @@
 # TODO
 # - descriptions
-# - subpackage for geoip due extra deps? (it goes silly as then need THREE
-#   packages installed for functionality (userspace,kernel,data packages...)
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
@@ -20,7 +18,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	1
+%define		rel	2
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -80,10 +78,11 @@ Summary:	Kernel modules for xtables addons
 Summary(pl.UTF-8):	Moudły jądra dla xtables addons
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-Conflicts:	xtables-geoip < 20090901-2
 # VERSION only dependency is intentional, for allowing multiple kernel pkgs and
 # single userspace package installs.
 Requires:	%{name} = %{version}
+Suggests:	xtables-geoip
+Conflicts:	xtables-geoip < 20090901-2
 %{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
 
