@@ -18,7 +18,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	2
+%define		rel	1
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -26,12 +26,12 @@ Summary(ru.UTF-8):	Утилиты для управления пакетными
 Summary(uk.UTF-8):	Утиліти для керування пакетними фільтрами ядра Linux
 Summary(zh_CN.UTF-8):	Linux内核包过滤管理工具
 Name:		xtables-addons
-Version:	1.27
+Version:	1.28
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.xz
-# Source0-md5:	f4f65ce5361d7f8c0908ca3db37fa8ee
+# Source0-md5:	b94fe23370a1294b985e9a06a0f9d129
 URL:		http://xtables-addons.sourceforge.net/
 Patch0:		kernelrelease.patch
 BuildRequires:	autoconf
@@ -130,8 +130,21 @@ cd ..
 %{__make} -C extensions install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+rm -f $RPM_BUILD_ROOT%{_libdir}/libxt_ACCOUNT_cl.{la,so}
+
 install -d $RPM_BUILD_ROOT%{_mandir}/man8
 cp -a xtables-addons.8 $RPM_BUILD_ROOT%{_mandir}/man8
+
+install -d $RPM_BUILD_ROOT/etc/modprobe.d
+cat <<'EOF' > $RPM_BUILD_ROOT/etc/modprobe.d/xt_sysrq.conf
+# Set password at modprobe time. if this file is secure if properly guarded,
+# i.e only readable by root.
+#options xt_SYSRQ password=cookies
+
+# The hash algorithm can also be specified as a module option, for example, to use SHA-256 instead of the default SHA-1:
+#options xt_SYSRQ hash=sha256
+EOF
+
 %endif
 
 %clean
@@ -158,6 +171,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with kernel}
 %files -n kernel%{_alt_kernel}-net-xtables-addons
 %defattr(644,root,root,755)
+%config(noreplace) %verify(not md5 mtime size) /etc/modprobe.d/xt_sysrq.conf
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/compat_xtables.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_*.ko.gz
 %endif
