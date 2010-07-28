@@ -37,7 +37,7 @@ URL:		http://xtables-addons.sourceforge.net/
 Patch0:		%{name}-libs.patch
 Patch1:		%{name}-geoip-dbpath.patch
 Patch2:		kernelrelease.patch
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake
 BuildRequires:	iptables-devel >= 1.4.3
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.25}
