@@ -45,13 +45,13 @@ Requires:	iptables >= 1.4.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # use macro, so adapter won't try to wrap
-%define		kpackage	kernel%{_alt_kernel}-net-xtables-addons = %{rel}@%{_kernel_ver_str}
+%define		kpackage	kernel%{_alt_kernel}-net-xtables-addons = %{version}-%{rel}@%{_kernel_ver_str}
 
 %description
 An extensible NAT system, and an extensible packet filtering system.
 Replacement of ipchains in 2.6 and higher kernels.
 
-You need %{kpackage} installed for the tools to work.
+You should have %{kpackage} installed for the tools to work.
 
 %description -l pl.UTF-8
 Wydajny system translacji adresów (NAT) oraz system filtrowania
