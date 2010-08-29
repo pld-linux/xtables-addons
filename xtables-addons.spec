@@ -18,7 +18,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	6
+%define		rel	7
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -131,6 +131,8 @@ cd ..
 	DESTDIR=$RPM_BUILD_ROOT
 
 rm -f $RPM_BUILD_ROOT%{_libdir}/libxt_ACCOUNT_cl.{la,so}
+# provided by iptables
+rm -f $RPM_BUILD_ROOT%{_libdir}/xtables/libxt_TEE.so
 
 install -d $RPM_BUILD_ROOT%{_mandir}/man8
 cp -a xtables-addons.8 $RPM_BUILD_ROOT%{_mandir}/man8
