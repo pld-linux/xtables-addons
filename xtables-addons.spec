@@ -18,7 +18,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	7
+%define		rel	8
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -123,8 +123,9 @@ install -d $RPM_BUILD_ROOT{/etc/modprobe.d,/lib/modules/%{_kernel_ver}/kernel/ne
 
 %if %{with kernel}
 cd extensions
+install iptable_rawpost.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter
 %install_kernel_modules -m compat_xtables -d kernel/net/netfilter
-install -p xt_*ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/netfilter
+install -p {ACCOUNT/,pknock/,}xt_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/netfilter
 cd ..
 %endif
 
@@ -173,6 +174,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n kernel%{_alt_kernel}-net-xtables-addons
 %defattr(644,root,root,755)
 %config(noreplace) %verify(not md5 mtime size) /etc/modprobe.d/xt_sysrq.conf
+/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/iptable_rawpost.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/compat_xtables.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_*.ko.gz
 %endif
