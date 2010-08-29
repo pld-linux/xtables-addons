@@ -35,12 +35,14 @@ Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.
 URL:		http://xtables-addons.sourceforge.net/
 Patch0:		kernelrelease.patch
 BuildRequires:	autoconf
-BuildRequires:	automake
+BuildRequires:	automake >= 1.11
 BuildRequires:	iptables-devel >= 1.4.3
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.25}
 BuildRequires:	libtool
-BuildRequires:	pkgconfig
+BuildRequires:	pkgconfig >= 0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.379
+BuildRequires:	tar >= 1.22
+BuildRequires:	xz
 Requires:	iptables >= 1.4.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -117,7 +119,7 @@ srcdir=${PWD:-$(pwd)}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter,%{_mandir}/man8}
+install -d $RPM_BUILD_ROOT{/etc/modprobe.d,/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter,%{_mandir}/man8}
 
 %if %{with kernel}
 cd extensions
@@ -134,10 +136,9 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/libxt_ACCOUNT_cl.{la,so}
 # provided by iptables
 rm -f $RPM_BUILD_ROOT%{_libdir}/xtables/libxt_TEE.so
 
-install -d $RPM_BUILD_ROOT%{_mandir}/man8
 cp -a xtables-addons.8 $RPM_BUILD_ROOT%{_mandir}/man8
+%endif
 
-install -d $RPM_BUILD_ROOT/etc/modprobe.d
 cat <<'EOF' > $RPM_BUILD_ROOT/etc/modprobe.d/xt_sysrq.conf
 # Set password at modprobe time. if this file is secure if properly guarded,
 # i.e only readable by root.
@@ -147,12 +148,10 @@ cat <<'EOF' > $RPM_BUILD_ROOT/etc/modprobe.d/xt_sysrq.conf
 #options xt_SYSRQ hash=sha256
 EOF
 
-%endif
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
+%post   -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
 
 %post -n kernel%{_alt_kernel}-net-xtables-addons
