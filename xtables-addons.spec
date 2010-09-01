@@ -36,7 +36,7 @@ URL:		http://xtables-addons.sourceforge.net/
 Patch0:		kernelrelease.patch
 Patch1:		%{name}-pre2.6.35-checkentry.patch
 BuildRequires:	autoconf
-BuildRequires:	automake >= 1.11
+BuildRequires:	automake >= 1.10.2
 BuildRequires:	iptables-devel >= 1.4.3
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.25}
 BuildRequires:	libtool
