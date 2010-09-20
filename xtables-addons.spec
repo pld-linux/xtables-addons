@@ -19,7 +19,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	14
+%define		rel	15
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -81,6 +81,7 @@ Summary:	Kernel modules for xtables addons
 Summary(pl.UTF-8):	Moudły jądra dla xtables addons
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
+Conflicts:	xtables-geoip < 20090901-2
 # VERSION only dependency is intentional, for allowing multiple kernel pkgs and
 # single userspace package installs.
 Requires:	%{name} = %{version}
@@ -117,7 +118,7 @@ export XA_TOPSRCDIR=$PWD
 %endif
 
 %if %{with userspace}
-%{__make} -C extensions
+%{__make}
 %endif
 
 %install
@@ -135,11 +136,8 @@ cd ..
 %{__make} -C extensions install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-cd extensions
-for m in $(cat .manpages.lst); do
-	cp -a libxt_$m.man $RPM_BUILD_ROOT%{_mandir}/man8/libxt_$m.8
-done
-cd ..
+install -d $RPM_BUILD_ROOT%{_mandir}/man8
+cp -a xtables-addons.8 $RPM_BUILD_ROOT%{_mandir}/man8
 %endif
 
 %clean
@@ -155,7 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/xtables/libxt_*.so
-%{_mandir}/man8/libxt_*.*
+%{_mandir}/man8/xtables-addons.8*
 %endif
 
 %if %{with kernel}

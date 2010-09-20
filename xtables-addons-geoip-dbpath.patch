@@ -5,7 +5,7 @@
  #include <xtables.h>
  #include "xt_geoip.h"
 -#define GEOIP_DB_DIR "/var/geoip"
-+#define GEOIP_DB_DIR "/var/lib/geoip"
++#define GEOIP_DB_DIR "/usr/share/xt_geoip"
  
  static void geoip_help(void)
  {
@@ -16,7 +16,7 @@
  The extra files you will need is the binary database files. They are generated
  from a country-subnet database with the geoip_csv_iv0.pl tool, available at
 -http://jengelh.hopto.org/files/geoip/ . The files MUST be moved to /var/geoip/
-+http://jengelh.hopto.org/files/geoip/ . The files MUST be moved to /var/lib/geoip/
++http://jengelh.hopto.org/files/geoip/ . The files MUST be moved to /usr/share/xt_geoip/
  as the shared library is statically looking for this pathname (e.g.
 -/var/geoip/LE/de.iv0).
-+/var/lib/geoip/LE/de.iv0).
++/usr/share/xt_geoip/LE/de.iv0).
