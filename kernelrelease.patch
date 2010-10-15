@@ -1,5 +1,6 @@
---- xtables-addons-1.27/configure.ac~	2010-05-16 22:19:02.000000000 +0200
-+++ xtables-addons-1.27/configure.ac	2010-06-07 22:46:52.942325149 +0200
+diff -ur xtables-addons-1.30/configure.ac xtables-addons-1.30.new//configure.ac
+--- xtables-addons-1.30/configure.ac	2010-10-02 00:41:47.000000000 +0200
++++ xtables-addons-1.30.new//configure.ac	2010-10-15 16:59:31.936357030 +0200
 @@ -38,38 +38,6 @@
  	-I\${XA_TOPSRCDIR}/include";
  
@@ -28,7 +29,7 @@
 -	fi;
 -fi;
 -echo "Found kernel version $kmajor.$kminor.$kmicro.$kstable in $kbuilddir";
--if test "$kmajor" -gt 2 -o "$kminor" -gt 6 -o "$kmicro" -gt 35; then
+-if test "$kmajor" -gt 2 -o "$kminor" -gt 6 -o "$kmicro" -gt 36; then
 -	echo "WARNING: You are trying a newer kernel. Results may vary. :-)";
 -elif test \( "$kmajor" -lt 2 -o "$kminor" -lt 6 -o "$kmicro" -lt 17 \) -o \
 -    \( "$kmajor" -eq 2 -a "$kminor" -eq 6 -a "$kmicro" -eq 18 -a \
@@ -39,3 +40,4 @@
  
  AC_SUBST([regular_CFLAGS])
  AC_SUBST([kbuilddir])
+Tylko w xtables-addons-1.30.new/: configure.ac~
