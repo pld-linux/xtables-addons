@@ -18,7 +18,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	14
+%define		rel	1
 Summary:	Extensible packet filtering system && extensible NAT system
 Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
 Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
@@ -26,15 +26,14 @@ Summary(ru.UTF-8):	Утилиты для управления пакетными
 Summary(uk.UTF-8):	Утиліти для керування пакетними фільтрами ядра Linux
 Summary(zh_CN.UTF-8):	Linux内核包过滤管理工具
 Name:		xtables-addons
-Version:	1.28
+Version:	1.30
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.xz
-# Source0-md5:	b94fe23370a1294b985e9a06a0f9d129
+# Source0-md5:	38d369a29fdd1ea86fe83df262e03064
 URL:		http://xtables-addons.sourceforge.net/
 Patch0:		kernelrelease.patch
-Patch1:		%{name}-pre2.6.35-checkentry.patch
 BuildRequires:	autoconf
 BuildRequires:	automake >= 1.10.2
 BuildRequires:	iptables-devel >= 1.4.3
@@ -98,7 +97,6 @@ Moduły jądra dla xtables addons.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %{__sed} -i -e 's#build_ipset=m#build_ipset=n#' mconfig
 
