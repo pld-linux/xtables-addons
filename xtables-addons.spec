@@ -1,11 +1,8 @@
-# TODO
-# - descriptions
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# # don't build userspace tools
-%bcond_with	verbose		# verbose build (V=1)
 
 %if %{without kernel}
 %undefine	with_dist_kernel
@@ -19,16 +16,12 @@
 %endif
 
 %define		rel	8
-Summary:	Extensible packet filtering system && extensible NAT system
-Summary(pl.UTF-8):	System filtrowania pakietów oraz system translacji adresów (NAT)
-Summary(pt_BR.UTF-8):	Ferramenta para controlar a filtragem de pacotes no kernel-2.6.x
-Summary(ru.UTF-8):	Утилиты для управления пакетными фильтрами ядра Linux
-Summary(uk.UTF-8):	Утиліти для керування пакетними фільтрами ядра Linux
-Summary(zh_CN.UTF-8):	Linux内核包过滤管理工具
+Summary:	Additional extensions for xtables packet filtering system
+Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		xtables-addons
 Version:	1.31
 Release:	%{rel}
-License:	GPL
+License:	GPL v2
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.xz
 # Source0-md5:	97ac895a67df67c28def98763023d51b
@@ -50,34 +43,23 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		kpackage	kernel%{_alt_kernel}-net-xtables-addons = %{version}-%{rel}@%{_kernel_ver_str}
 
 %description
-An extensible NAT system, and an extensible packet filtering system.
-Replacement of ipchains in 2.6 and higher kernels.
+xtables-addons is the proclaimed successor to patch-o-matic(-ng). It
+contains extensions that were not accepted in the main
+xtables/iptables package.
 
-You should have %{kpackage} installed for the tools to work.
+For the tools to work, you should install kernel modules, which could
+be found in %{kpackage}.
 
 %description -l pl.UTF-8
-Wydajny system translacji adresów (NAT) oraz system filtrowania
-pakietów. Zamiennik ipchains w jądrach 2.6 i nowszych.
+xtables-addons to następca patch-o-matic(-ng). Zawiera rozszerzenia,
+które nie zostały zaakceptowane do głównego pakietu xtables/iptables.
 
-%description -l pt_BR.UTF-8
-Esta é a ferramenta que controla o código de filtragem de pacotes do
-kernel 2.6, obsoletando ipchains. Com esta ferramenta você pode
-configurar filtros de pacotes, NAT, mascaramento (masquerading),
-regras dinâmicas (stateful inspection), etc.
-
-%description -l ru.UTF-8
-xtables-addons управляют кодом фильтрации сетевых пакетов в ядре
-Linux. Они позволяют вам устанавливать межсетевые экраны (firewalls) и
-IP маскарадинг, и т.п.
-
-%description -l uk.UTF-8
-xtables-addons управляють кодом фільтрації пакетів мережі в ядрі
-Linux. Вони дозволяють вам встановлювати міжмережеві екрани
-(firewalls) та IP маскарадинг, тощо.
+Aby narzędzia działały należy zainstalować moduły jądra, które można
+znaleźć w pakiecie %{kpackage}.
 
 %package -n kernel%{_alt_kernel}-net-xtables-addons
 Summary:	Kernel modules for xtables addons
-Summary(pl.UTF-8):	Moudły jądra dla xtables addons
+Summary(pl.UTF-8):	Moudły jądra dla rozszerzeń z pakietu xtables-addons
 Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 # VERSION only dependency is intentional, for allowing multiple kernel pkgs and
@@ -92,7 +74,7 @@ Requires(post,postun):	/sbin/depmod
 Kernel modules for xtables addons.
 
 %description -n kernel%{_alt_kernel}-net-xtables-addons -l pl.UTF-8
-Moduły jądra dla xtables addons.
+Moduły jądra dla rozszerzeń z pakietu xtables-addons.
 
 %prep
 %setup -q
@@ -131,7 +113,7 @@ install -p {ACCOUNT/,pknock/,}xt_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}
 cd ..
 
 cat <<'EOF' > $RPM_BUILD_ROOT/etc/modprobe.d/xt_sysrq.conf
-# Set password at modprobe time. if this file is secure if properly guarded,
+# Set password at modprobe time. This file is secure if properly guarded,
 # i.e only readable by root.
 #options xt_SYSRQ password=cookies
 
@@ -165,6 +147,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
+%doc README
 %attr(755,root,root) %{_sbindir}/iptaccount
 %attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libxt_ACCOUNT_cl.so.0
