@@ -1,8 +1,8 @@
---- xtables-addons-1.31/configure.ac~	2010-12-02 22:13:08.366366978 +0100
-+++ xtables-addons-1.31/configure.ac	2010-12-02 22:14:14.780561896 +0100
-@@ -39,47 +39,6 @@
- 	-Winline -pipe -DXTABLES_LIBDIR=\\\"\${xtlibdir}\\\" \
- 	-I\${XA_TOPSRCDIR}/include";
+--- xtables-addons-1.32/configure.ac.orig	2011-01-04 04:37:58.000000000 +0100
++++ xtables-addons-1.32/configure.ac	2011-02-07 20:26:34.200686361 +0100
+@@ -40,47 +40,6 @@
+ 	-Wmissing-prototypes -Wredundant-decls -Wshadow -Wstrict-prototypes \
+ 	-Winline -pipe";
  
 -#
 -# check kernel version
@@ -14,21 +14,21 @@
 -	echo "WARNING: This distribution's shipped kernel is not supported.";
 -fi;
 -AC_MSG_CHECKING([kernel version that we will build against])
--krel="$(make -sC ${kbuilddir} kernelrelease)";
--krel="${krel%%-*}";
--kmajor="${krel%%.*}";
--krel="${krel#*.}";
--kminor="${krel%%.*}";
--krel="${krel#*.}";
--kmicro="${krel%%.*}";
--if test "$kmicro" = "$krel"; then
--	kmicro="$(($kmicro+0))"; # Get rid of non numbers ("2.6.36+" -> "2.6.36")
--	kstable=0;
--else
--	kmicro="$(($kmicro+0))";
--	kstable="${krel#*.}";
--	kstable="$(($kstable+0))";
--fi;
+-krel="$(make -sC "$kbuilddir" M=. kernelrelease)";
+-kmajor="${krel%%[[^0-9]]*}";
+-kmajor="$(($kmajor+0))";
+-krel="${krel:${#kmajor}}";
+-krel="${krel#.}";
+-kminor="${krel%%[[^0-9]]*}";
+-kminor="$(($kminor+0))";
+-krel="${krel:${#kminor}}";
+-krel="${krel#.}";
+-kmicro="${krel%%[[^0-9]]*}";
+-kmicro="$(($kmicro+0))";
+-krel="${krel:${#kmicro}}";
+-krel="${krel#.}";
+-kstable="${krel%%[[^0-9]]*}";
+-kstable="$(($kstable+0))";
 -if test -z "$kmajor" -o -z "$kminor" -o -z "$kmicro"; then
 -	echo "WARNING: Version detection did not succeed. Continue at own luck.";
 -else
@@ -45,6 +45,6 @@
 -	fi;
 -fi;
 -
+ AC_SUBST([regular_CPPFLAGS])
  AC_SUBST([regular_CFLAGS])
  AC_SUBST([kbuilddir])
- AC_SUBST([xtlibdir])

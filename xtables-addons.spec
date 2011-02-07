@@ -15,16 +15,16 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	8
+%define		rel	1
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		xtables-addons
-Version:	1.31
+Version:	1.32
 Release:	%{rel}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.xz
-# Source0-md5:	97ac895a67df67c28def98763023d51b
+# Source0-md5:	978a04e3e532ef0414ae1dd6a405304d
 Patch0:		kernelrelease.patch
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
@@ -80,7 +80,7 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.
 %setup -q
 %patch0 -p1
 
-%{__sed} -i -e 's#build_ipset=m#build_ipset=n#' mconfig
+%{__sed} -i -e 's#build_ipset4=m#build_ipset4=#' mconfig
 
 %build
 %{__libtoolize}
@@ -89,7 +89,7 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.
 %{__autoheader}
 %{__automake}
 %configure \
-	--with-kbuild=no
+	--without-kbuild
 
 %if %{with kernel}
 srcdir=${PWD:-$(pwd)}
@@ -147,7 +147,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc README
+%doc README doc/{README.psd,changelog.txt}
 %attr(755,root,root) %{_sbindir}/iptaccount
 %attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libxt_ACCOUNT_cl.so.0
