@@ -32,10 +32,10 @@ License:	GPL
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.xz
 # Source0-md5:	97ac895a67df67c28def98763023d51b
-URL:		http://xtables-addons.sourceforge.net/
 Patch0:		kernelrelease.patch
-BuildRequires:	autoconf
-BuildRequires:	automake >= 1.10.2
+URL:		http://xtables-addons.sourceforge.net/
+BuildRequires:	autoconf >= 2.50
+BuildRequires:	automake >= 1:1.10.2
 BuildRequires:	iptables-devel >= 1.4.3
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.25}
 BuildRequires:	libtool
@@ -104,6 +104,7 @@ Moduły jądra dla xtables addons.
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
+%{__autoheader}
 %{__automake}
 %configure \
 	--with-kbuild=no
@@ -114,31 +115,20 @@ srcdir=${PWD:-$(pwd)}
 %endif
 
 %if %{with userspace}
-%{__make}
+%{__make} \
+	V=1
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/etc/modprobe.d,/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter,%{_mandir}/man8}
 
 %if %{with kernel}
+install -d $RPM_BUILD_ROOT{/etc/modprobe.d,/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter}
 cd extensions
 install iptable_rawpost.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter
 %install_kernel_modules -m compat_xtables -d kernel/net/netfilter
 install -p {ACCOUNT/,pknock/,}xt_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/netfilter
 cd ..
-%endif
-
-%if %{with userspace}
-%{__make} -C extensions install \
-	DESTDIR=$RPM_BUILD_ROOT
-
-rm -f $RPM_BUILD_ROOT%{_libdir}/libxt_ACCOUNT_cl.{la,so}
-# provided by iptables
-rm -f $RPM_BUILD_ROOT%{_libdir}/xtables/libxt_TEE.so
-
-cp -a xtables-addons.8 $RPM_BUILD_ROOT%{_mandir}/man8
-%endif
 
 cat <<'EOF' > $RPM_BUILD_ROOT/etc/modprobe.d/xt_sysrq.conf
 # Set password at modprobe time. if this file is secure if properly guarded,
@@ -148,6 +138,17 @@ cat <<'EOF' > $RPM_BUILD_ROOT/etc/modprobe.d/xt_sysrq.conf
 # The hash algorithm can also be specified as a module option, for example, to use SHA-256 instead of the default SHA-1:
 #options xt_SYSRQ hash=sha256
 EOF
+%endif
+
+%if %{with userspace}
+%{__make} -C extensions install \
+	DESTDIR=$RPM_BUILD_ROOT
+
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libxt_ACCOUNT_cl.{la,so}
+
+install -d $RPM_BUILD_ROOT%{_mandir}/man8
+cp -a xtables-addons.8 $RPM_BUILD_ROOT%{_mandir}/man8
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -165,15 +166,17 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/iptaccount
+%attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libxt_ACCOUNT_cl.so.0
 %attr(755,root,root) %{_libdir}/xtables/libxt_*.so
-%attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*
 %{_mandir}/man8/xtables-addons.8*
 %endif
 
 %if %{with kernel}
 %files -n kernel%{_alt_kernel}-net-xtables-addons
 %defattr(644,root,root,755)
-%config(noreplace) %verify(not md5 mtime size) /etc/modprobe.d/xt_sysrq.conf
+# restricted permissions - may contain password
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/modprobe.d/xt_sysrq.conf
 /lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/iptable_rawpost.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/compat_xtables.ko.gz
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_*.ko.gz
