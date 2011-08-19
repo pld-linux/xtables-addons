@@ -15,22 +15,21 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	15
+%define		rel	1
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		xtables-addons
-Version:	1.36
+Version:	1.37
 Release:	%{rel}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.xz
-# Source0-md5:	2b976f502f626ed2245d276d83efc451
-Patch0:		kernelrelease.patch
+# Source0-md5:	bfb0adba948fa885fffa6443eeaee28a
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
-BuildRequires:	automake >= 1:1.10.2
+BuildRequires:	automake >= 1:1.11
 BuildRequires:	iptables-devel >= 1.4.3
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.25}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.29}
 BuildRequires:	libtool
 BuildRequires:	pkgconfig >= 0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.379
@@ -78,7 +77,6 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %{__sed} -i -e 's#build_ipset4=m#build_ipset4=#' mconfig
 
