@@ -19,12 +19,13 @@
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		xtables-addons
-Version:	1.37
+Version:	1.38
 Release:	%{rel}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.xz
-# Source0-md5:	bfb0adba948fa885fffa6443eeaee28a
+# Source0-md5:	6a69e9931e2392348c8674af1f2fc056
+Patch0:		%{name}-build.patch
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake >= 1:1.11
@@ -36,6 +37,7 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	tar >= 1.22
 BuildRequires:	xz
 Requires:	iptables >= 1.4.3
+Obsoletes:	ipset
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # use macro, so adapter won't try to wrap
@@ -77,6 +79,7 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %{__sed} -i -e 's#build_ipset4=m#build_ipset4=#' mconfig
 
@@ -146,10 +149,13 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README doc/{README.psd,changelog.txt}
+%attr(755,root,root) %{_sbindir}/ipset
 %attr(755,root,root) %{_sbindir}/iptaccount
 %attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libxt_ACCOUNT_cl.so.0
 %attr(755,root,root) %{_libdir}/xtables/libxt_*.so
+%attr(755,root,root) %{_libdir}/libipset.so.*
+%{_mandir}/man8/ipset.8*
 %{_mandir}/man8/iptaccount.8*
 %{_mandir}/man8/xtables-addons.8*
 %endif
