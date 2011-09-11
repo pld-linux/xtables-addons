@@ -157,7 +157,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README doc/{README.psd,changelog.txt}
-%attr(755,root,root) %{_sbindir}/ipset
 %attr(755,root,root) %{_sbindir}/iptaccount
 %attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libxt_ACCOUNT_cl.so.0
@@ -165,6 +164,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/iptaccount.8*
 %{_mandir}/man8/xtables-addons.8*
 %if %{with ipset}
+%attr(755,root,root) %{_sbindir}/ipset
 %attr(755,root,root) %{_libdir}/libipset.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libipset.so.1
 %{_mandir}/man8/ipset.8*
