@@ -2,7 +2,8 @@
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
-%bcond_without	userspace	# # don't build userspace tools
+%bcond_without	userspace	# don't build userspace tools
+%bcond_with	ipset		# include IPSET (6.x)
 
 %if %{without kernel}
 %undefine	with_dist_kernel
@@ -37,7 +38,10 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	tar >= 1.22
 BuildRequires:	xz
 Requires:	iptables >= 1.4.3
+%if %{with ipset}
+Provides:	ipset = 6.7
 Obsoletes:	ipset
+%endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # use macro, so adapter won't try to wrap
@@ -81,7 +85,9 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.
 %setup -q
 %patch0 -p1
 
-%{__sed} -i -e 's#build_ipset4=m#build_ipset4=#' mconfig
+%if %{without ipset}
+%{__sed} -i -e 's#build_ipset6=m#build_ipset6=#' mconfig
+%endif
 
 %build
 %{__libtoolize}
@@ -126,11 +132,13 @@ EOF
 %if %{with userspace}
 %{__make} -C extensions install \
 	DESTDIR=$RPM_BUILD_ROOT
+%{__make} install-man \
+	DESTDIR=$RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libxt_ACCOUNT_cl.{la,so}
-
-install -d $RPM_BUILD_ROOT%{_mandir}/man8
-cp -a xtables-addons.8 $RPM_BUILD_ROOT%{_mandir}/man8
+%if %{with ipset}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libipset.{la,so}
+%endif
 %endif
 
 %clean
@@ -154,10 +162,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libxt_ACCOUNT_cl.so.0
 %attr(755,root,root) %{_libdir}/xtables/libxt_*.so
-%attr(755,root,root) %{_libdir}/libipset.so.*
-%{_mandir}/man8/ipset.8*
 %{_mandir}/man8/iptaccount.8*
 %{_mandir}/man8/xtables-addons.8*
+%if %{with ipset}
+%attr(755,root,root) %{_libdir}/libipset.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libipset.so.1
+%{_mandir}/man8/ipset.8*
+%endif
 %endif
 
 %if %{with kernel}
