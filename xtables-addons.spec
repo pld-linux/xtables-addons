@@ -42,6 +42,7 @@ Requires:	iptables >= 1.4.3
 Provides:	ipset = 6.7
 Obsoletes:	ipset
 %endif
+Obsoletes:	iptables-ipp2p
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # use macro, so adapter won't try to wrap
