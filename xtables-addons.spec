@@ -29,14 +29,14 @@ Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
-BuildRequires:	iptables-devel >= 1.4.3
+BuildRequires:	iptables-devel >= 1.4.5
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.29}
 BuildRequires:	libtool
 BuildRequires:	pkgconfig >= 0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	tar >= 1.22
 BuildRequires:	xz
-Requires:	iptables >= 1.4.3
+Requires:	iptables >= 1.4.5
 %if %{with ipset}
 Provides:	ipset = 6.7
 Obsoletes:	ipset
