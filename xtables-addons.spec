@@ -3,7 +3,6 @@
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
-%bcond_with	ipset		# include IPSET (6.x)
 
 %if %{without kernel}
 %undefine	with_dist_kernel
@@ -31,17 +30,13 @@ URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	iptables-devel >= 1.4.5
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.29}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.32}
 BuildRequires:	libtool
 BuildRequires:	pkgconfig >= 0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	tar >= 1.22
 BuildRequires:	xz
 Requires:	iptables >= 1.4.5
-%if %{with ipset}
-Provides:	ipset = 6.7
-Obsoletes:	ipset
-%endif
 Obsoletes:	iptables-ipp2p
 BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 
@@ -84,10 +79,6 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.
 
 %prep
 %setup -q -n %{pname}-%{version}
-
-%if %{without ipset}
-%{__sed} -i -e 's#build_ipset6=m#build_ipset6=#' mconfig
-%endif
 
 %build
 %{__libtoolize}
@@ -136,9 +127,6 @@ EOF
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libxt_ACCOUNT_cl.{la,so}
-%if %{with ipset}
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libipset.{la,so}
-%endif
 %endif
 
 %clean
@@ -163,12 +151,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/xtables/libxt_*.so
 %{_mandir}/man8/iptaccount.8*
 %{_mandir}/man8/xtables-addons.8*
-%if %{with ipset}
-%attr(755,root,root) %{_sbindir}/ipset
-%attr(755,root,root) %{_libdir}/libipset.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libipset.so.1
-%{_mandir}/man8/ipset.8*
-%endif
 %endif
 
 %if %{with kernel}
