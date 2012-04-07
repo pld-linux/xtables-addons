@@ -16,15 +16,16 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	1
+%define		rel	2
+%define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
-Name:		xtables-addons
+Name:		%{pname}%{_alt_kernel}
 Version:	1.42
 Release:	%{rel}
 License:	GPL v2
 Group:		Networking/Admin
-Source0:	http://downloads.sourceforge.net/xtables-addons/%{name}-%{version}.tar.xz
+Source0:	http://downloads.sourceforge.net/xtables-addons/%{pname}-%{version}.tar.xz
 # Source0-md5:	7c996a0400667b57ab4fb53a013ae742
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
@@ -42,7 +43,7 @@ Provides:	ipset = 6.7
 Obsoletes:	ipset
 %endif
 Obsoletes:	iptables-ipp2p
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 
 # use macro, so adapter won't try to wrap
 %define		kpackage	kernel%{_alt_kernel}-net-xtables-addons = %{version}-%{rel}@%{_kernel_ver_str}
@@ -69,7 +70,7 @@ Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 # VERSION only dependency is intentional, for allowing multiple kernel pkgs and
 # single userspace package installs.
-Requires:	%{name} = %{version}
+Requires:	%{pname} = %{version}
 Suggests:	xtables-geoip
 Conflicts:	xtables-geoip < 20090901-2
 %{?with_dist_kernel:%requires_releq_kernel}
