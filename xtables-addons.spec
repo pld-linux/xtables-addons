@@ -16,7 +16,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	2
+%define		rel	3
 %define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
@@ -83,7 +83,7 @@ Kernel modules for xtables addons.
 Moduły jądra dla rozszerzeń z pakietu xtables-addons.
 
 %prep
-%setup -q
+%setup -q -n %{pname}-%{version}
 
 %if %{without ipset}
 %{__sed} -i -e 's#build_ipset6=m#build_ipset6=#' mconfig
