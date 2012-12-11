@@ -15,7 +15,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	14
+%define		rel	15
 %define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
