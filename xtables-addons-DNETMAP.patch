@@ -1,0 +1,271 @@
+diff -ruN xtables-addons-1.47.1/extensions/libxt_DNETMAP.c xtables-addons-2.0/extensions/libxt_DNETMAP.c
+--- xtables-addons-1.47.1/extensions/libxt_DNETMAP.c	2012-10-15 21:29:22.000000000 +0200
++++ xtables-addons-2.0/extensions/libxt_DNETMAP.c	2012-11-12 19:03:51.000000000 +0100
+@@ -69,19 +69,8 @@
+ 	return bits;
+ }
+ 
+-static void DNETMAP_init(struct xt_entry_target *t)
+-{
+-	struct xt_DNETMAP_tginfo *tginfo = (void *)&t->data;
+-	struct nf_nat_ipv4_multi_range_compat *mr = &tginfo->prefix;
+-
+-	/* Actually, it's 0, but it's ignored at the moment. */
+-	mr->rangesize = 1;
+-	tginfo->ttl = 0;
+-	tginfo->flags = 0;
+-}
+-
+ /* Parses network address */
+-static void parse_prefix(char *arg, struct nf_nat_ipv4_range *range)
++static void parse_prefix(char *arg, struct nf_nat_range *range)
+ {
+ 	char *slash;
+ 	const struct in_addr *ip;
+@@ -97,7 +86,7 @@
+ 	if (ip == NULL)
+ 		xtables_error(PARAMETER_PROBLEM, "Bad IP address \"%s\"\n",
+ 			      arg);
+-	range->min_ip = ip->s_addr;
++	range->min_addr.in = *ip;
+ 	if (slash) {
+ 		if (strchr(slash + 1, '.')) {
+ 			ip = xtables_numeric_to_ipmask(slash + 1);
+@@ -123,20 +112,20 @@
+ 	} else
+ 		netmask = ~0;
+ 
+-	if (range->min_ip & ~netmask) {
++	if (range->min_addr.ip & ~netmask) {
+ 		if (slash)
+ 			*slash = '/';
+ 		xtables_error(PARAMETER_PROBLEM, "Bad network address \"%s\"\n",
+ 			      arg);
+ 	}
+-	range->max_ip = range->min_ip | ~netmask;
++	range->max_addr.ip = range->min_addr.ip | ~netmask;
+ }
+ 
+ static int DNETMAP_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			 const void *entry, struct xt_entry_target **target)
+ {
+ 	struct xt_DNETMAP_tginfo *tginfo = (void *)(*target)->data;
+-	struct nf_nat_ipv4_multi_range_compat *mr = &tginfo->prefix;
++	struct nf_nat_range *mr = &tginfo->prefix;
+ 	char *end;
+ 
+ 	switch (c) {
+@@ -147,7 +136,7 @@
+ 				  invert);
+ 
+ 		/* TO-DO use xtables_ipparse_any instead? */
+-		parse_prefix(optarg, &mr->range[0]);
++		parse_prefix(optarg, mr);
+ 		*flags |= XT_DNETMAP_PREFIX;
+ 		tginfo->flags |= XT_DNETMAP_PREFIX;
+ 		return 1;
+@@ -192,14 +181,13 @@
+ 			       int numeric)
+ {
+ 	struct xt_DNETMAP_tginfo *tginfo = (void *)&target->data;
+-	const struct nf_nat_ipv4_multi_range_compat *mr = &tginfo->prefix;
+-	const struct nf_nat_ipv4_range *r = &mr->range[0];
++	const struct nf_nat_range *r = &tginfo->prefix;
+ 	struct in_addr a;
+ 	int bits;
+ 
+-	a.s_addr = r->min_ip;
++	a = r->min_addr.in;
+ 	printf("%s", xtables_ipaddr_to_numeric(&a));
+-	a.s_addr = ~(r->min_ip ^ r->max_ip);
++	a.s_addr = ~(r->min_addr.ip ^ r->max_addr.ip);
+ 	bits = netmask2bits(a.s_addr);
+ 	if (bits < 0)
+ 		printf("/%s", xtables_ipaddr_to_numeric(&a));
+@@ -265,7 +253,6 @@
+ 	.size          = XT_ALIGN(sizeof(struct xt_DNETMAP_tginfo)),
+ 	.userspacesize = XT_ALIGN(sizeof(struct xt_DNETMAP_tginfo)),
+ 	.help          = DNETMAP_help,
+-	.init          = DNETMAP_init,
+ 	.parse         = DNETMAP_parse,
+ 	.print         = DNETMAP_print,
+ 	.save          = DNETMAP_save,
+diff -ruN xtables-addons-1.47.1/extensions/xt_DNETMAP.c xtables-addons-2.0/extensions/xt_DNETMAP.c
+--- xtables-addons-1.47.1/extensions/xt_DNETMAP.c	2012-10-15 21:29:22.000000000 +0200
++++ xtables-addons-2.0/extensions/xt_DNETMAP.c	2012-11-12 19:03:51.000000000 +0100
+@@ -84,7 +78,7 @@
+ };
+ 
+ struct dnetmap_prefix {
+-	struct nf_nat_ipv4_multi_range_compat prefix;
++	struct nf_nat_range prefix;
+ 	char prefix_str[16];
+ #ifdef CONFIG_PROC_FS
+ 	char proc_str_data[20];
+@@ -179,7 +168,7 @@
+ 
+ static struct dnetmap_prefix *
+ dnetmap_prefix_lookup(struct dnetmap_net *dnetmap_net,
+-		      const struct nf_nat_ipv4_multi_range_compat *mr)
++		      const struct nf_nat_range *mr)
+ {
+ 	struct dnetmap_prefix *p;
+ 
+@@ -258,7 +247,7 @@
+ {
+ 	struct dnetmap_net *dnetmap_net = dnetmap_pernet(par->net);
+ 	const struct xt_DNETMAP_tginfo *tginfo = par->targinfo;
+-	const struct nf_nat_ipv4_multi_range_compat *mr = &tginfo->prefix;
++	const struct nf_nat_range *mr = &tginfo->prefix;
+ 	struct dnetmap_prefix *p;
+ 	struct dnetmap_entry *e;
+ #ifdef CONFIG_PROC_FS
+@@ -274,14 +263,10 @@
+ 		return ret;
+ 	}
+ 
+-	if (!(mr->range[0].flags & NF_NAT_RANGE_MAP_IPS)) {
++	if (!(mr->flags & NF_NAT_RANGE_MAP_IPS)) {
+ 		pr_debug("DNETMAP:check: bad MAP_IPS.\n");
+ 		return -EINVAL;
+ 	}
+-	if (mr->rangesize != 1) {
+-		pr_debug("DNETMAP:check: bad rangesize %u.\n", mr->rangesize);
+-		return -EINVAL;
+-	}
+ 
+ 	mutex_lock(&dnetmap_mutex);
+ 	p = dnetmap_prefix_lookup(dnetmap_net, mr);
+@@ -307,15 +292,15 @@
+ 	INIT_LIST_HEAD(&p->lru_list);
+ 	INIT_LIST_HEAD(&p->elist);
+ 
+-	ip_min = ntohl(mr->range[0].min_ip) + (whole_prefix == 0);
+-	ip_max = ntohl(mr->range[0].max_ip) - (whole_prefix == 0);
++	ip_min = ntohl(mr->min_addr.ip) + (whole_prefix == 0);
++	ip_max = ntohl(mr->max_addr.ip) - (whole_prefix == 0);
+ 
+-	sprintf(p->prefix_str, NIPQUAD_FMT "/%u", NIPQUAD(mr->range[0].min_ip),
++	sprintf(p->prefix_str, NIPQUAD_FMT "/%u", NIPQUAD(mr->min_addr.ip),
+ 		33 - ffs(~(ip_min ^ ip_max)));
+ #ifdef CONFIG_PROC_FS
+-	sprintf(p->proc_str_data, NIPQUAD_FMT "_%u", NIPQUAD(mr->range[0].min_ip),
++	sprintf(p->proc_str_data, NIPQUAD_FMT "_%u", NIPQUAD(mr->min_addr.ip),
+ 		33 - ffs(~(ip_min ^ ip_max)));
+-	sprintf(p->proc_str_stat, NIPQUAD_FMT "_%u_stat", NIPQUAD(mr->range[0].min_ip),
++	sprintf(p->proc_str_stat, NIPQUAD_FMT "_%u_stat", NIPQUAD(mr->min_addr.ip),
+ 		33 - ffs(~(ip_min ^ ip_max)));
+ #endif
+ 	printk(KERN_INFO KBUILD_MODNAME ": new prefix %s\n", p->prefix_str);
+@@ -381,8 +366,8 @@
+ 	enum ip_conntrack_info ctinfo;
+ 	__be32 prenat_ip, postnat_ip, prenat_ip_prev;
+ 	const struct xt_DNETMAP_tginfo *tginfo = par->targinfo;
+-	const struct nf_nat_ipv4_multi_range_compat *mr = &tginfo->prefix;
+-	struct nf_nat_ipv4_range newrange;
++	const struct nf_nat_range *mr = &tginfo->prefix;
++	struct nf_nat_range newrange;
+ 	struct dnetmap_entry *e;
+ 	struct dnetmap_prefix *p;
+ 	__s32 jttl;
+@@ -419,15 +404,14 @@
+ 
+ 		spin_unlock_bh(&dnetmap_lock);
+ 
+-		newrange = ((struct nf_nat_ipv4_range) {
+-			    mr->range[0].flags | NF_NAT_RANGE_MAP_IPS,
+-			    e->prenat_addr, e->prenat_addr,
+-			    mr->range[0].min, mr->range[0].max});
+-
+-		/* Hand modified range to generic setup. */
++		memset(&newrange, 0, sizeof(newrange));
++		newrange.flags = mr->flags | NF_NAT_RANGE_MAP_IPS;
++		newrange.min_addr.ip = e->prenat_addr;
++		newrange.max_addr.ip = e->prenat_addr;
++		newrange.min_proto = mr->min_proto;
++		newrange.max_proto = mr->max_proto;
+ 		return nf_nat_setup_info(ct, &newrange,
+ 					 HOOK2MANIP(par->hooknum));
+-
+ 	}
+ 
+ 	prenat_ip = ip_hdr(skb)->saddr;
+@@ -509,12 +493,12 @@
+ 
+ 	spin_unlock_bh(&dnetmap_lock);
+ 
+-	newrange = ((struct nf_nat_ipv4_range) {
+-		    mr->range[0].flags | NF_NAT_RANGE_MAP_IPS,
+-		    postnat_ip, postnat_ip,
+-		    mr->range[0].min, mr->range[0].max});
+-
+-	/* Hand modified range to generic setup. */
++	memset(&newrange, 0, sizeof(newrange));
++	newrange.flags = mr->flags | NF_NAT_RANGE_MAP_IPS;
++	newrange.min_addr.ip = postnat_ip;
++	newrange.max_addr.ip = postnat_ip;
++	newrange.min_proto = mr->min_proto;
++	newrange.max_proto = mr->max_proto;
+ 	return nf_nat_setup_info(ct, &newrange, HOOK2MANIP(par->hooknum));
+ 
+ no_rev_map:
+@@ -528,7 +512,7 @@
+ {
+ 	struct dnetmap_net *dnetmap_net = dnetmap_pernet(par->net);
+ 	const struct xt_DNETMAP_tginfo *tginfo = par->targinfo;
+-	const struct nf_nat_ipv4_multi_range_compat *mr = &tginfo->prefix;
++	const struct nf_nat_range *mr = &tginfo->prefix;
+ 	struct dnetmap_prefix *p;
+ 
+ 	if (!(tginfo->flags & XT_DNETMAP_PREFIX))
+diff -ruN xtables-addons-1.47.1/extensions/xt_DNETMAP.h xtables-addons-2.0/extensions/xt_DNETMAP.h
+--- xtables-addons-1.47.1/extensions/xt_DNETMAP.h	2012-10-15 21:29:22.000000000 +0200
++++ xtables-addons-2.0/extensions/xt_DNETMAP.h	2012-11-12 19:03:51.000000000 +0100
+@@ -13,7 +13,7 @@
+ };
+ 
+ struct xt_DNETMAP_tginfo {
+-	struct nf_nat_ipv4_multi_range_compat prefix;
++	struct nf_nat_range prefix;
+ 	__u8 flags;
+ 	__s32 ttl;
+ };
+diff -ruN xtables-addons-1.47.1/include/linux/netfilter/nf_nat.h xtables-addons-2.0/include/linux/netfilter/nf_nat.h
+--- xtables-addons-1.47.1/include/linux/netfilter/nf_nat.h	2012-10-15 21:29:22.000000000 +0200
++++ xtables-addons-2.0/include/linux/netfilter/nf_nat.h	2012-11-12 19:03:51.000000000 +0100
+@@ -22,4 +22,12 @@
+ 	struct nf_nat_ipv4_range	range[1];
+ };
+ 
++struct nf_nat_range {
++	unsigned int			flags;
++	union nf_inet_addr		min_addr;
++	union nf_inet_addr		max_addr;
++	union nf_conntrack_man_proto	min_proto;
++	union nf_conntrack_man_proto	max_proto;
++};
++
+ #endif /* _NETFILTER_NF_NAT_H */
+diff -ruN xtables-addons-1.47.1/mconfig xtables-addons-2.0/mconfig
+--- xtables-addons-1.47.1/mconfig	2012-10-15 21:29:22.000000000 +0200
++++ xtables-addons-2.0/mconfig	2012-11-12 19:03:51.000000000 +0100
+@@ -2,10 +2,9 @@
+ #
+ build_ACCOUNT=m
+ build_CHAOS=m
+-build_CHECKSUM=
+ build_DELUDE=m
+ build_DHCPMAC=m
+-build_DNETMAP=m
++build_DNETMAP=
+ build_ECHO=m
+ build_IPMARK=m
+ build_LOGMARK=m
+@@ -13,7 +12,6 @@
+ build_STEAL=m
+ build_SYSRQ=m
+ build_TARPIT=m
+-build_TEE=
+ build_condition=m
+ build_fuzzy=m
+ build_geoip=m
