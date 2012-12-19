@@ -1,4 +1,7 @@
 #
+# UPDATE WARNING: xtables-addons 2.0 support only kernels 3.7+
+#
+#
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
