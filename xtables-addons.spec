@@ -18,7 +18,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	17
+%define		rel	18
 %define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
@@ -108,19 +108,19 @@ srcdir=${PWD:-$(pwd)}
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
-install -d $RPM_BUILD_ROOT{/etc/modprobe.d,/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter}
-cd extensions
-install iptable_rawpost.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter
-%install_kernel_modules -m compat_xtables -d kernel/net/netfilter
-install -p {ACCOUNT/,pknock/,}xt_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/netfilter
-cd ..
+%install_kernel_modules -m extensions/iptable_rawpost -d kernel/net/ipv4/netfilter
+for drv in extensions/compat_xtables.ko extensions/{ACCOUNT/,pknock/,}xt_*.ko ; do
+%install_kernel_modules -m ${drv%.ko} -d kernel/net/netfilter
+done
 
+install -d $RPM_BUILD_ROOT/etc/modprobe.d
 cat <<'EOF' > $RPM_BUILD_ROOT/etc/modprobe.d/xt_sysrq.conf
 # Set password at modprobe time. This file is secure if properly guarded,
 # i.e only readable by root.
 #options xt_SYSRQ password=cookies
 
-# The hash algorithm can also be specified as a module option, for example, to use SHA-256 instead of the default SHA-1:
+# The hash algorithm can also be specified as a module option, for example,
+# to use SHA-256 instead of the default SHA-1:
 #options xt_SYSRQ hash=sha256
 EOF
 %endif
