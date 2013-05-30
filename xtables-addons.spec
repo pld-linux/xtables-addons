@@ -18,18 +18,17 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	23
+%define		rel	1
 %define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		%{pname}%{_alt_kernel}
-Version:	1.47.1
+Version:	2.2
 Release:	%{rel}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{pname}-%{version}.tar.xz
-# Source0-md5:	92b9fc72980f9046622446d451296994
-Patch0:		%{pname}-DNETMAP.patch
+# Source0-md5:	bc60abaa3cacc907f646ec6f873054f5
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
@@ -83,7 +82,6 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.
 
 %prep
 %setup -q -n %{pname}-%{version}
-%patch0 -p1
 
 %build
 %{__libtoolize}
