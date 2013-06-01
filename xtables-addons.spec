@@ -10,15 +10,12 @@
 %if %{without kernel}
 %undefine	with_dist_kernel
 %endif
-%if "%{_alt_kernel}" != "%{nil}"
-%undefine	with_userspace
-%endif
 %if %{without userspace}
 # nothing to be placed to debuginfo package
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	23
+%define		rel	24
 %define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
@@ -41,6 +38,8 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	tar >= 1.22
 BuildRequires:	xz
 Requires:	iptables >= 1.4.5
+Provides:	xtables-addons = %{version}-%{release}
+Obsoletes:	xtables-addons < %{version}-%{release}
 Obsoletes:	iptables-ipp2p
 BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 
