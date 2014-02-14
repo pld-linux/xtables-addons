@@ -41,7 +41,7 @@ exit 1
 %define		kpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%kernel_pkg ; done)
 %define		bkpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%build_kernel_pkg ; done)
 
-%define		rel	1
+%define		rel	2
 %define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
@@ -65,6 +65,8 @@ BuildRequires:	xz
 Requires:	iptables >= 1.4.5
 Obsoletes:	iptables-ipp2p
 BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
+
+%define		_duplicate_files_terminate_build	0
 
 %description
 xtables-addons is the proclaimed successor to patch-o-matic(-ng). It
