@@ -41,17 +41,17 @@ exit 1
 %define		kpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%kernel_pkg ; done)
 %define		bkpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%build_kernel_pkg ; done)
 
-%define		rel	8
+%define		rel	1
 %define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	2.3
+Version:	2.4
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{pname}-%{version}.tar.xz
-# Source0-md5:	7d942729c365a549513511061f74c3e3
+# Source0-md5:	b2dfe9a37f328d3a3f6fe402e0596a2c
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
@@ -108,7 +108,6 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.\
 %defattr(644,root,root,755)\
 # restricted permissions - may contain password\
 %attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/modprobe.d/xt_sysrq.conf\
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/iptable_rawpost.ko*\
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/compat_xtables.ko*\
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_*.ko*\
 \
@@ -122,7 +121,6 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.\
 %define build_kernel_pkg()\
 srcdir=${PWD:-$(pwd)}\
 %build_kernel_modules XA_ABSTOPSRCDIR=$srcdir -C extensions -m compat_xtables\
-%install_kernel_modules -D installed -m extensions/iptable_rawpost -d kernel/net/ipv4/netfilter\
 for drv in extensions/compat_xtables.ko extensions/{ACCOUNT/,pknock/,}xt_*.ko ; do\
 %install_kernel_modules -D installed -m ${drv%.ko} -d kernel/net/netfilter\
 done\
