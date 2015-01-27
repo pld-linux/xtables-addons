@@ -16,25 +16,10 @@
 exit 1
 %endif
 
-%if "%{_alt_kernel}" != "%{nil}"
-%if 0%{?build_kernels:1}
-%{error:alt_kernel and build_kernels are mutually exclusive}
-exit 1
-%endif
-%undefine	with_userspace
-%global		_build_kernels		%{alt_kernel}
-%else
-%global		_build_kernels		%{?build_kernels:,%{?build_kernels}}
-%endif
-
 %if %{without userspace}
 # nothing to be placed to debuginfo package
 %define		_enable_debug_packages	0
 %endif
-
-%define		kbrs	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo "BuildRequires:kernel%%{_alt_kernel}-module-build >= 3:3.7.0" ; done)
-%define		kpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%kernel_pkg ; done)
-%define		bkpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%build_kernel_pkg ; done)
 
 %define		rel	1
 %define		pname	xtables-addons
@@ -51,7 +36,7 @@ URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	iptables-devel >= 1.4.5
-%{?with_kernel:%{expand:%kbrs}}
+%{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:3.7.0}}
 BuildRequires:	libtool
 BuildRequires:	pkgconfig >= 0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.678
@@ -121,7 +106,7 @@ for drv in extensions/compat_xtables.ko extensions/{ACCOUNT/,pknock/,}xt_*.ko ; 
 done\
 %{nil}
 
-%{?with_kernel:%{expand:%kpkg}}
+%{?with_kernel:%{expand:%create_kernel_packages}}
 
 %prep
 %setup -q -n %{pname}-%{version}
@@ -130,7 +115,7 @@ done\
 %configure \
 	--without-kbuild
 
-%{?with_kernel:%{expand:%bkpkg}}
+%{?with_kernel:%{expand:%build_kernel_packages}}
 
 %if %{with userspace}
 %{__make} \
