@@ -3,14 +3,9 @@
 #
 #
 # Conditional build:
-%bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
-
-%if %{without kernel}
-%undefine	with_dist_kernel
-%endif
 
 # The goal here is to have main, userspace, package built once with
 # simple release number, and only rebuild kernel packages with kernel
@@ -56,7 +51,7 @@ URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	iptables-devel >= 1.4.5
-%{?with_dist_kernel:%{expand:%kbrs}}
+%{?with_kernel:%{expand:%kbrs}}
 BuildRequires:	libtool
 BuildRequires:	pkgconfig >= 0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.678
@@ -95,10 +90,8 @@ Requires:	%{pname} = %{version}\
 Suggests:	xtables-geoip\
 Conflicts:	xtables-geoip < 20090901-2\
 Requires(post,postun):	/sbin/depmod\
-%if %{with dist_kernel}\
 %requires_releq_kernel\
 Requires(postun):	%releq_kernel\
-%endif\
 \
 %description -n kernel%{_alt_kernel}-net-xtables-addons\
 Kernel modules for xtables addons.\
