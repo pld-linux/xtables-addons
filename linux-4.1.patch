@@ -1,0 +1,54 @@
+--- a/extensions/xt_TARPIT.c	2014-09-29 03:33:13.000000000 -0500
++++ b/extensions/xt_TARPIT.c	2015-06-29 11:38:26.582851153 -0500
+@@ -250,7 +250,11 @@
+ 
+ #ifdef CONFIG_BRIDGE_NETFILTER
+ 	if (hook != NF_INET_FORWARD || (nskb->nf_bridge != NULL &&
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 1, 0)
+ 	    nskb->nf_bridge->mask & BRNF_BRIDGED))
++#else
++	    nskb->nf_bridge->physoutdev))
++#endif
+ #else
+ 	if (hook != NF_INET_FORWARD)
+ #endif
+@@ -279,7 +279,12 @@
+ 
+ 	nf_ct_attach(nskb, oldskb);
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 1, 0)
+ 	NF_HOOK(NFPROTO_IPV4, NF_INET_LOCAL_OUT, nskb, NULL,
+ 		skb_dst(nskb)->dev, dst_output);
++#else
++	NF_HOOK(NFPROTO_IPV4, NF_INET_LOCAL_OUT, NULL, nskb, NULL,
++		skb_dst(nskb)->dev, dst_output_sk);
++#endif
+ 	return;
+ 
+@@ -394,7 +394,12 @@
+ 
+ 	nf_ct_attach(nskb, oldskb);
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 1, 0)
+ 	NF_HOOK(NFPROTO_IPV6, NF_INET_LOCAL_OUT, nskb, NULL,
+ 	        skb_dst(nskb)->dev, dst_output);
++#else
++	NF_HOOK(NFPROTO_IPV6, NF_INET_LOCAL_OUT, NULL, nskb, NULL,
++	        skb_dst(nskb)->dev, dst_output_sk);
++#endif
+ 	return;
+ 
+--- a/extensions/xt_DELUDE.c	2014-09-29 03:33:13.000000000 -0500
++++ b/extensions/xt_DELUDE.c	2015-06-29 10:10:00.622867945 -0500
+@@ -107,7 +107,11 @@
+ 	addr_type = RTN_UNSPEC;
+ #ifdef CONFIG_BRIDGE_NETFILTER
+ 	if (hook != NF_INET_FORWARD || (nskb->nf_bridge != NULL &&
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 1, 0)
+ 	    nskb->nf_bridge->mask & BRNF_BRIDGED))
++#else
++	    nskb->nf_bridge->physoutdev))
++#endif
+ #else
+ 	if (hook != NF_INET_FORWARD)
+ #endif
