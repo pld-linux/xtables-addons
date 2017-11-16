@@ -1,0 +1,14 @@
+--- xtables-addons-2.13/extensions/xt_DNETMAP.c~	2017-06-29 14:46:37.000000000 +0200
++++ xtables-addons-2.13/extensions/xt_DNETMAP.c	2017-11-16 10:15:47.371793222 +0100
+@@ -377,9 +377,9 @@
+ 	unsigned int hooknum = par->hooknum;
+ #endif
+ 
+-	NF_CT_ASSERT(hooknum == NF_INET_POST_ROUTING ||
++	WARN_ON(!(hooknum == NF_INET_POST_ROUTING ||
+ 		     hooknum == NF_INET_LOCAL_OUT ||
+-		     hooknum == NF_INET_PRE_ROUTING);
++		     hooknum == NF_INET_PRE_ROUTING));
+ 	ct = nf_ct_get(skb, &ctinfo);
+ 
+ 	jttl = tginfo->flags & XT_DNETMAP_TTL ? tginfo->ttl * HZ : jtimeout;
