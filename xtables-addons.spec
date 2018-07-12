@@ -1,5 +1,5 @@
 #
-# UPDATE WARNING: xtables-addons 2.0 support only kernels 3.7+
+# UPDATE WARNING: xtables-addons 3.0 support only kernels 4.15+
 #
 #
 # Conditional build:
@@ -26,18 +26,17 @@ exit 1
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	2.14
+Version:	3.0
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{pname}-%{version}.tar.xz
-# Source0-md5:	ebb073119a5f250dbfe6b855fcad56fd
-Patch0:		kernel-4.15.patch
+# Source0-md5:	b37ed4d9c28cdcd5558c55934be8d051
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	iptables-devel >= 1.4.5
-%{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:3.7.0}}
+%{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:4.15.0}}
 BuildRequires:	libtool
 BuildRequires:	pkgconfig >= 0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.678
@@ -111,7 +110,6 @@ done\
 
 %prep
 %setup -q -n %{pname}-%{version}
-%patch0 -p1
 
 %build
 %configure \
