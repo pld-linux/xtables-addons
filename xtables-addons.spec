@@ -1,6 +1,6 @@
 #
 # UPDATE WARNING: xtables-addons 2.0 support only kernels 3.7+
-#
+#                 xtables-addons 3.0 (XTADDONS_3 branch) support only kernels 4.15+
 #
 # Conditional build:
 %bcond_without	kernel		# don't build kernel modules
