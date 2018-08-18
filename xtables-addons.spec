@@ -21,11 +21,11 @@ exit 1
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	3
+%define		rel	4
 %define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
-Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
+Name:		%{pname}-2%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
 Version:	2.14
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
