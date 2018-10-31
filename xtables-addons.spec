@@ -21,7 +21,7 @@ exit 1
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	4
+%define		rel	5
 %define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
@@ -72,7 +72,7 @@ Release:	%{rel}@%{_kernel_ver_str}\
 Group:		Base/Kernel\
 # VERSION only dependency is intentional, for allowing multiple kernel pkgs and\
 # single userspace package installs.\
-Requires:	%{pname} >= %{version}\
+Requires:	%{pname}-2 >= %{version}\
 Suggests:	xtables-geoip\
 Conflicts:	xtables-geoip < 20090901-2\
 Requires(post,postun):	/sbin/depmod\
