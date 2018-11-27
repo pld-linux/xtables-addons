@@ -26,23 +26,23 @@ exit 1
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	3.1
+Version:	3.2
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{pname}-%{version}.tar.xz
-# Source0-md5:	a77d2fc2151eed97f903d7905640e549
+# Source0-md5:	80ea89ba8d5a001a8d71c7f05b2f0141
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
-BuildRequires:	iptables-devel >= 1.4.5
-%{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:4.15.0}}
+BuildRequires:	iptables-devel >= 1.6.0
+%{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:4.18.0}}
 BuildRequires:	libtool
 BuildRequires:	pkgconfig >= 0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.678
 BuildRequires:	tar >= 1.22
 BuildRequires:	xz
-Requires:	iptables >= 1.4.5
+Requires:	iptables >= 1.6.0
 Obsoletes:	iptables-ipp2p
 BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 
