@@ -26,12 +26,12 @@ exit 1
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	3.5
+Version:	3.6
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	http://downloads.sourceforge.net/xtables-addons/%{pname}-%{version}.tar.xz
-# Source0-md5:	d9fa406635a4a0ffa647d282b0f1191c
+# Source0-md5:	947dca2a1c6062ccbddf1ea449d89344
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
