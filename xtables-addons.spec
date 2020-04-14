@@ -39,7 +39,7 @@ BuildRequires:	iptables-devel >= 1.6.0
 %{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:4.18.0}}
 BuildRequires:	libtool
 BuildRequires:	pkgconfig >= 1:0.9.0
-BuildRequires:	rpmbuild(macros) >= 1.678
+BuildRequires:	rpmbuild(macros) >= 1.746
 BuildRequires:	tar >= 1.22
 BuildRequires:	xz
 Requires:	iptables >= 1.6.0
