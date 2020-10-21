@@ -26,12 +26,12 @@ exit 1
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	3.10
+Version:	3.11
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	https://inai.de/files/xtables-addons/%{pname}-%{version}.tar.xz
-# Source0-md5:	fd7ab0ca7e1bbedfabcb0ca890e1b1dc
+# Source0-md5:	7d338d0afb236eea377bcc951492f48a
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
@@ -161,6 +161,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README doc/{README.psd,changelog.txt}
 %attr(755,root,root) %{_sbindir}/iptaccount
+%attr(755,root,root) %{_sbindir}/pknlusr
 %attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libxt_ACCOUNT_cl.so.0
 %attr(755,root,root) %{_libdir}/xtables/libxt_*.so
