@@ -1,0 +1,181 @@
+diff -ur xtables-addons-2.14/extensions/ACCOUNT/xt_ACCOUNT.c xtables-addons-2.14-256/extensions/ACCOUNT/xt_ACCOUNT.c
+--- xtables-addons-2.14/extensions/ACCOUNT/xt_ACCOUNT.c	2017-11-22 18:29:25.000000000 +0100
++++ xtables-addons-2.14-256/extensions/ACCOUNT/xt_ACCOUNT.c	2021-02-06 22:39:05.896766609 +0100
+@@ -482,7 +482,7 @@
+ static unsigned int
+ ipt_acc_target(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 	struct ipt_acc_net *ian = net_generic(par->state->net, ipt_acc_net_id);
+ #else
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,4,0)
+diff -ur xtables-addons-2.14/extensions/compat_xtables.h xtables-addons-2.14-256/extensions/compat_xtables.h
+--- xtables-addons-2.14/extensions/compat_xtables.h	2017-11-22 18:29:25.000000000 +0100
++++ xtables-addons-2.14-256/extensions/compat_xtables.h	2021-02-06 22:42:17.377058406 +0100
+@@ -82,7 +82,7 @@
+ 
+ static inline struct net *par_net(const struct xt_action_param *par)
+ {
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 10, 0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
+ 	return par->state->net;
+ #else
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 4, 0)
+diff -ur xtables-addons-2.14/extensions/xt_CHAOS.c xtables-addons-2.14-256/extensions/xt_CHAOS.c
+--- xtables-addons-2.14/extensions/xt_CHAOS.c	2017-11-22 18:29:25.000000000 +0100
++++ xtables-addons-2.14-256/extensions/xt_CHAOS.c	2021-02-06 22:39:05.896766609 +0100
+@@ -58,7 +58,7 @@
+ 
+ 	{
+ 		struct xt_action_param local_par;
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 		local_par.state    = par->state;
+ #else
+ 		local_par.in        = par->in,
+@@ -78,7 +78,7 @@
+ 	destiny = (info->variant == XTCHAOS_TARPIT) ? xt_tarpit : xt_delude;
+ 	{
+ 		struct xt_action_param local_par;
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 		local_par.state    = par->state;
+ #else
+ 		local_par.in       = par->in;
+@@ -108,7 +108,7 @@
+ 
+ 	if ((unsigned int)prandom_u32() <= reject_percentage) {
+ 		struct xt_action_param local_par;
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 		local_par.state    = par->state;
+ #else
+ 		local_par.in       = par->in;
+@@ -123,7 +123,7 @@
+ 	/* TARPIT/DELUDE may not be called from the OUTPUT chain */
+ 	if (iph->protocol == IPPROTO_TCP &&
+ 	    info->variant != XTCHAOS_NORMAL &&
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 	    par->state->hook
+ #else
+ 	    par->hooknum
+diff -ur xtables-addons-2.14/extensions/xt_DELUDE.c xtables-addons-2.14-256/extensions/xt_DELUDE.c
+--- xtables-addons-2.14/extensions/xt_DELUDE.c	2017-11-22 18:29:25.000000000 +0100
++++ xtables-addons-2.14-256/extensions/xt_DELUDE.c	2021-02-06 22:39:05.896766609 +0100
+@@ -152,7 +152,7 @@
+ 	 * actually want to have a connection open, we are still going to drop it.
+ 	 */
+ 	delude_send_reset(par_net(par), skb,
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 	                  par->state->hook
+ #else
+ 	                  par->hooknum
+diff -ur xtables-addons-2.14/extensions/xt_DNETMAP.c xtables-addons-2.14-256/extensions/xt_DNETMAP.c
+--- xtables-addons-2.14/extensions/xt_DNETMAP.c	2017-11-22 18:29:25.000000000 +0100
++++ xtables-addons-2.14-256/extensions/xt_DNETMAP.c	2021-02-06 22:39:05.896766609 +0100
+@@ -356,7 +356,7 @@
+ static unsigned int
+ dnetmap_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 	struct net *net = dev_net(par->state->in ? par->state->in : par->state->out);
+ #else
+ 	struct net *net = dev_net(par->in ? par->in : par->out);
+@@ -371,7 +371,7 @@
+ 	struct dnetmap_entry *e;
+ 	struct dnetmap_prefix *p;
+ 	__s32 jttl;
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 	unsigned int hooknum = par->state->hook;
+ #else
+ 	unsigned int hooknum = par->hooknum;
+@@ -500,7 +500,7 @@
+ 	newrange.max_addr.ip = postnat_ip;
+ 	newrange.min_proto = mr->min_proto;
+ 	newrange.max_proto = mr->max_proto;
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 	return nf_nat_setup_info(ct, &newrange, HOOK2MANIP(par->state->hook));
+ #else
+ 	return nf_nat_setup_info(ct, &newrange, HOOK2MANIP(par->hooknum));
+diff -ur xtables-addons-2.14/extensions/xt_ECHO.c xtables-addons-2.14-256/extensions/xt_ECHO.c
+--- xtables-addons-2.14/extensions/xt_ECHO.c	2017-11-22 18:29:25.000000000 +0100
++++ xtables-addons-2.14-256/extensions/xt_ECHO.c	2021-02-06 22:39:05.896766609 +0100
+@@ -35,7 +35,7 @@
+ 	void *payload;
+ 	struct flowi6 fl;
+ 	struct dst_entry *dst = NULL;
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 	struct net *net = dev_net((par->state->in != NULL) ? par->state->in : par->state->out);
+ #else
+ 	struct net *net = dev_net((par->in != NULL) ? par->in : par->out);
+diff -ur xtables-addons-2.14/extensions/xt_iface.c xtables-addons-2.14-256/extensions/xt_iface.c
+--- xtables-addons-2.14/extensions/xt_iface.c	2017-11-22 18:29:25.000000000 +0100
++++ xtables-addons-2.14-256/extensions/xt_iface.c	2021-02-06 22:39:05.896766609 +0100
+@@ -45,13 +45,13 @@
+     const struct xt_action_param *par, struct net_device **put)
+ {
+ 	if (info->flags & XT_IFACE_DEV_IN)
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 		return par->state->in;
+ #else
+ 		return par->in;
+ #endif
+ 	else if (info->flags & XT_IFACE_DEV_OUT)
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 		return par->state->out;
+ #else
+ 		return par->out;
+diff -ur xtables-addons-2.14/extensions/xt_LOGMARK.c xtables-addons-2.14-256/extensions/xt_LOGMARK.c
+--- xtables-addons-2.14/extensions/xt_LOGMARK.c	2017-11-22 18:29:25.000000000 +0100
++++ xtables-addons-2.14-256/extensions/xt_LOGMARK.c	2021-02-06 22:39:05.896766609 +0100
+@@ -82,7 +82,7 @@
+ 	printk("<%u>%.*s""iif=%d hook=%s nfmark=0x%x "
+ 	       "secmark=0x%x classify=0x%x",
+ 	       info->level, (unsigned int)sizeof(info->prefix), info->prefix,
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 	       skb_ifindex(skb), hook_names[par->state->hook],
+ #else
+ 	       skb_ifindex(skb), hook_names[par->hooknum],
+diff -ur xtables-addons-2.14/extensions/xt_lscan.c xtables-addons-2.14-256/extensions/xt_lscan.c
+--- xtables-addons-2.14/extensions/xt_lscan.c	2017-11-22 18:29:25.000000000 +0100
++++ xtables-addons-2.14-256/extensions/xt_lscan.c	2021-02-06 22:39:05.896766609 +0100
+@@ -204,7 +204,7 @@
+ 		unsigned int n;
+ 
+ 		n = lscan_mt_full(ctdata->mark & connmark_mask, ctstate,
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 		    par->state->in == init_net.loopback_dev, tcph,
+ #else
+ 		    par->in == init_net.loopback_dev, tcph,
+diff -ur xtables-addons-2.14/extensions/xt_TARPIT.c xtables-addons-2.14-256/extensions/xt_TARPIT.c
+--- xtables-addons-2.14/extensions/xt_TARPIT.c	2017-11-22 18:29:25.000000000 +0100
++++ xtables-addons-2.14-256/extensions/xt_TARPIT.c	2021-02-06 22:39:05.896766609 +0100
+@@ -455,7 +455,7 @@
+ 	if (iph->frag_off & htons(IP_OFFSET))
+ 		return NF_DROP;
+ 
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 	tarpit_tcp4(par_net(par), skb, par->state->hook, info->variant);
+ #else
+ 	tarpit_tcp4(par_net(par), skb, par->hooknum, info->variant);
+@@ -501,7 +501,7 @@
+ 		return NF_DROP;
+ 	}
+ 
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,10,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+ 	tarpit_tcp6(par_net(par), skb, par->state->hook, info->variant);
+ #else
+ 	tarpit_tcp6(par_net(par), skb, par->hooknum, info->variant);
