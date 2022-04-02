@@ -26,12 +26,13 @@ exit 1
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	3.18
+Version:	3.19
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	https://inai.de/files/xtables-addons/%{pname}-%{version}.tar.xz
-# Source0-md5:	755471b1dc6808f274f914fa11552698
+# Source0-md5:	66185eeb44e8f9b30a299ece875a694f
+Patch0:		kernel-5.17.patch
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
@@ -110,6 +111,7 @@ done\
 
 %prep
 %setup -q -n %{pname}-%{version}
+%patch0 -p1
 
 %build
 %configure \
@@ -163,7 +165,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/iptaccount
 %attr(755,root,root) %{_sbindir}/pknlusr
 %attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libxt_ACCOUNT_cl.so.0
+%attr(755,root,root) %ghost %{_libdir}/libxt_ACCOUNT_cl.so.1
 %attr(755,root,root) %{_libdir}/xtables/libxt_*.so
 %{_mandir}/man8/iptaccount.8*
 %{_mandir}/man8/xtables-addons.8*

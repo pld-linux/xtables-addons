@@ -1,0 +1,64 @@
+--- xtables-addons-3.19/extensions/pknock/xt_pknock.c~	2022-02-01 18:24:03.000000000 +0100
++++ xtables-addons-3.19/extensions/pknock/xt_pknock.c	2022-04-02 13:22:18.309078729 +0200
+@@ -277,7 +277,11 @@
+ 	int ret = seq_open(file, &pknock_seq_ops);
+ 	if (ret == 0) {
+ 		struct seq_file *sf = file->private_data;
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 		sf->private = PDE_DATA(inode);
++#else
++		sf->private = pde_data(inode);
++#endif
+ 	}
+ 	return ret;
+ }
+--- xtables-addons-3.19/extensions/xt_condition.c~	2022-02-01 18:24:03.000000000 +0100
++++ xtables-addons-3.19/extensions/xt_condition.c	2022-04-02 13:25:17.366962445 +0200
+@@ -83,14 +83,22 @@
+ 
+ static int condition_proc_open(struct inode *inode, struct file *file)
+ {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 	return single_open(file, condition_proc_show, PDE_DATA(inode));
++#else
++	return single_open(file, condition_proc_show, pde_data(inode));
++#endif
+ }
+ 
+ static ssize_t
+ condition_proc_write(struct file *file, const char __user *buffer,
+                      size_t length, loff_t *loff)
+ {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 	struct condition_variable *var = PDE_DATA(file_inode(file));
++#else
++	struct condition_variable *var = pde_data(file_inode(file));
++#endif
+ 	char newval;
+ 
+ 	if (length > 0) {
+--- xtables-addons-3.19/extensions/xt_quota2.c~	2022-02-01 18:24:03.000000000 +0100
++++ xtables-addons-3.19/extensions/xt_quota2.c	2022-04-02 13:26:27.276139534 +0200
+@@ -73,14 +73,22 @@
+ 
+ static int quota_proc_open(struct inode *inode, struct file *file)
+ {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 	return single_open(file, quota_proc_show, PDE_DATA(inode));
++#else
++	return single_open(file, quota_proc_show, pde_data(inode));
++#endif
+ }
+ 
+ static ssize_t
+ quota_proc_write(struct file *file, const char __user *input,
+                  size_t size, loff_t *loff)
+ {
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 17, 0)
+ 	struct xt_quota_counter *e = PDE_DATA(file_inode(file));
++#else
++	struct xt_quota_counter *e = pde_data(file_inode(file));
++#endif
+ 	char buf[sizeof("+-18446744073709551616")];
+ 
+ 	if (size > sizeof(buf))
