@@ -21,7 +21,7 @@ exit 1
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	1
+%define		rel	2
 %define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
@@ -159,7 +159,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc README doc/{README.psd,changelog.txt}
+%doc README.rst doc/{README.psd,changelog.rst}
 %attr(755,root,root) %{_sbindir}/iptaccount
 %attr(755,root,root) %{_sbindir}/pknlusr
 %attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
