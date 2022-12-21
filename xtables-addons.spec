@@ -144,7 +144,7 @@ EOF
 %if %{with userspace}
 %{__make} -C extensions install \
 	DESTDIR=$RPM_BUILD_ROOT
-%{__make} install-man \
+%{__make} install-exec-am install-man \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libxt_ACCOUNT_cl.{la,so}
@@ -160,11 +160,27 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README.rst doc/{README.psd,changelog.rst}
+%attr(755,root,root) %{_bindir}/xt_geoip_query
 %attr(755,root,root) %{_sbindir}/iptaccount
 %attr(755,root,root) %{_sbindir}/pknlusr
 %attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libxt_ACCOUNT_cl.so.1
 %attr(755,root,root) %{_libdir}/xtables/libxt_*.so
+%dir %{_libexecdir}/xtables-addons
+%attr(755,root,root) %{_libexecdir}/xtables-addons/xt_asn_build
+%attr(755,root,root) %{_libexecdir}/xtables-addons/xt_asn_dl
+%attr(755,root,root) %{_libexecdir}/xtables-addons/xt_asn_fetch
+%attr(755,root,root) %{_libexecdir}/xtables-addons/xt_geoip_build
+%attr(755,root,root) %{_libexecdir}/xtables-addons/xt_geoip_build_maxmind
+%attr(755,root,root) %{_libexecdir}/xtables-addons/xt_geoip_dl
+%attr(755,root,root) %{_libexecdir}/xtables-addons/xt_geoip_dl_maxmind
+%{_mandir}/man1/xt_asn_build.1*
+%{_mandir}/man1/xt_asn_dl.1*
+%{_mandir}/man1/xt_geoip_build.1*
+%{_mandir}/man1/xt_geoip_build_maxmind.1*
+%{_mandir}/man1/xt_geoip_dl.1*
+%{_mandir}/man1/xt_geoip_dl_maxmind.1*
+%{_mandir}/man1/xt_geoip_query.1*
 %{_mandir}/man8/iptaccount.8*
 %{_mandir}/man8/xtables-addons.8*
 %{_mandir}/man8/pknlusr.8*
