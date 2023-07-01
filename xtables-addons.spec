@@ -26,24 +26,24 @@ exit 1
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	3.23
+Version:	3.24
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	https://inai.de/files/xtables-addons/%{pname}-%{version}.tar.xz
-# Source0-md5:	8b7073d7cb820e08201e6e05c6ee98a5
+# Source0-md5:	bd6a30e2cdeb67ecba404ee2f6a14dc0
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	iptables-devel >= 1.6.0
 %{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:4.18.0}}
-BuildRequires:	libtool
+BuildRequires:	libtool >= 2:2
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.746
 BuildRequires:	tar >= 1.22
 BuildRequires:	xz
 Requires:	iptables >= 1.6.0
-Obsoletes:	iptables-ipp2p
+Obsoletes:	iptables-ipp2p < 0.8.3
 BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 
 %define		_duplicate_files_terminate_build	0
