@@ -3,8 +3,8 @@
 #                 xtables-addons 2.0 (XTADDONS_2 branch) support kernels 3.7 - 4.14
 #
 # Conditional build:
-%bcond_without	kernel		# don't build kernel modules
-%bcond_without	userspace	# don't build userspace tools
+%bcond_without	kernel		# kernel modules
+%bcond_without	userspace	# userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 
 # The goal here is to have main, userspace, package built once with
@@ -26,12 +26,12 @@ exit 1
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	3.25
+Version:	3.26
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	https://inai.de/files/xtables-addons/%{pname}-%{version}.tar.xz
-# Source0-md5:	c6372ccd8be68255d4e5036ac7cd2f2f
+# Source0-md5:	afcec8d977631d224eaf87b27d51e77d
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
