@@ -26,12 +26,12 @@ exit 1
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	3.27
+Version:	3.28
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 Source0:	https://inai.de/files/xtables-addons/%{pname}-%{version}.tar.xz
-# Source0-md5:	c6fc91e4ca48adcdcfee05141410764d
+# Source0-md5:	d25c91079904c2516a8a1fdc675a9841
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
@@ -88,7 +88,6 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.\
 %defattr(644,root,root,755)\
 # restricted permissions - may contain password\
 %attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/modprobe.d/xt_sysrq.conf\
-/lib/modules/%{_kernel_ver}/kernel/net/netfilter/compat_xtables.ko*\
 /lib/modules/%{_kernel_ver}/kernel/net/netfilter/xt_*.ko*\
 \
 %post -n kernel%{_alt_kernel}-net-xtables-addons\
@@ -101,7 +100,7 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.\
 %define build_kernel_pkg()\
 srcdir=${PWD:-$(pwd)}\
 %build_kernel_modules XA_ABSTOPSRCDIR=$srcdir -C extensions -m compat_xtables\
-for drv in extensions/compat_xtables.ko extensions/{ACCOUNT/,pknock/,}xt_*.ko ; do\
+for drv in extensions/{ACCOUNT/,pknock/,}xt_*.ko ; do\
 %install_kernel_modules -D installed -m ${drv%.ko} -d kernel/net/netfilter\
 done\
 %{nil}
