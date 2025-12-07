@@ -26,12 +26,12 @@ exit 1
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	3.29
+Version:	3.30
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
-Source0:	https://inai.de/files/xtables-addons/%{pname}-%{version}.tar.xz
-# Source0-md5:	330b0f4b03be0e2e7a83f0e3e2900ea4
+Source0:	https://inai.de/files/xtables-addons/%{pname}-%{version}.tar.zst
+# Source0-md5:	8966c920f3e3921c19a8200ca8ba238b
 URL:		http://xtables-addons.sourceforge.net/
 BuildRequires:	autoconf >= 2.65
 BuildRequires:	automake >= 1:1.11
@@ -40,8 +40,8 @@ BuildRequires:	iptables-devel >= 1.6.0
 BuildRequires:	libtool >= 2:2
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.746
-BuildRequires:	tar >= 1.22
-BuildRequires:	xz
+BuildRequires:	tar >= 1:1.31
+BuildRequires:	zstd
 Requires:	iptables >= 1.6.0
 Obsoletes:	iptables-ipp2p < 0.8.3
 BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
@@ -162,9 +162,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/xt_geoip_query
 %attr(755,root,root) %{_sbindir}/iptaccount
 %attr(755,root,root) %{_sbindir}/pknlusr
-%attr(755,root,root) %{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libxt_ACCOUNT_cl.so.1
-%attr(755,root,root) %{_libdir}/xtables/libxt_*.so
+%{_libdir}/libxt_ACCOUNT_cl.so.*.*.*
+%ghost %{_libdir}/libxt_ACCOUNT_cl.so.1
+%{_libdir}/xtables/libxt_*.so
 %dir %{_libexecdir}/xtables-addons
 %attr(755,root,root) %{_libexecdir}/xtables-addons/xt_asn_build
 %attr(755,root,root) %{_libexecdir}/xtables-addons/xt_asn_dl
