@@ -1,0 +1,11 @@
+--- xtables-addons-3.30/extensions/xt_TARPIT.c~	2025-10-11 14:15:06.000000000 +0200
++++ xtables-addons-3.30/extensions/xt_TARPIT.c	2025-12-08 09:56:09.273319752 +0100
+@@ -418,7 +418,7 @@
+ 	}
+ 	fl6.flowi6_oif = l3mdev_master_ifindex(READ_ONCE(skb_dst(nskb)->dev));
+ 	fl6.flowi6_mark = IP6_REPLY_MARK(net, oldskb->mark);
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 11, 0) || LINUX_VERSION_CODE >= KERNEL_VERSION(5, 10, 247)
+ 	security_skb_classify_flow(nskb, flowi6_to_flowi_common(&fl6));
+ #else
+ 	security_skb_classify_flow(nskb, flowi6_to_flowi(&fl6));
