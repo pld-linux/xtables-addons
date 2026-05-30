@@ -21,7 +21,7 @@ exit 1
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	2
+%define		rel	3
 %define		pname	xtables-addons
 Summary:	Additional extensions for xtables packet filtering system
 Summary(pl.UTF-8):	Dodatkowe rozszerzenia do systemu filtrowania pakietów xtables
@@ -64,7 +64,7 @@ które nie zostały zaakceptowane do głównego pakietu xtables/iptables.
 Aby narzędzia działały należy zainstalować moduły jądra, które można
 znaleźć w pakiecie kernel*-net-xtables-addons.
 
-%define	kernel_pkg()\
+%define	kernel_pkg() \
 %package -n kernel%{_alt_kernel}-net-xtables-addons\
 Summary:	Kernel modules for xtables addons\
 Summary(pl.UTF-8):	Moudły jądra dla rozszerzeń z pakietu xtables-addons\
@@ -98,7 +98,7 @@ Moduły jądra dla rozszerzeń z pakietu xtables-addons.\
 %depmod %{_kernel_ver}\
 %{nil}
 
-%define build_kernel_pkg()\
+%define build_kernel_pkg() \
 srcdir=${PWD:-$(pwd)}\
 %build_kernel_modules XA_ABSTOPSRCDIR=$srcdir -C extensions -m compat_xtables\
 for drv in extensions/{ACCOUNT/,pknock/,}xt_*.ko ; do\
